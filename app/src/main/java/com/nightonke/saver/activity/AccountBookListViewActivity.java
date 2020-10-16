@@ -200,7 +200,7 @@ public class AccountBookListViewActivity extends AppCompatActivity
 
         setTitle("");
 
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = findViewById(R.id.drawer_layout);
 
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
 
