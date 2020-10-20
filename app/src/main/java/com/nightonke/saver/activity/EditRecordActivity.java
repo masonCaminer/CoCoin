@@ -131,7 +131,7 @@ public class EditRecordActivity extends AppCompatActivity
 
         tagViewPager.setAdapter(tagAdapter);
         
-        myGridView = (MyGridView)findViewById(R.id.gridview);
+        myGridView = findViewById(R.id.gridview);
         myGridViewAdapter = new ButtonGridViewAdapter(this);
         myGridView.setAdapter(myGridViewAdapter);
 
@@ -150,13 +150,8 @@ public class EditRecordActivity extends AppCompatActivity
                     }
                 });
 
-        back = (MaterialIconView)findViewById(R.id.back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        back = findViewById(R.id.back);
+        back.setOnClickListener(v -> onBackPressed());
 
     }
 
@@ -179,21 +174,13 @@ public class EditRecordActivity extends AppCompatActivity
     }
 
     private AdapterView.OnItemClickListener gridViewClickListener
-            = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            buttonClickOperation(false, position);
-        }
-    };
+            = (parent, view, position, id) -> buttonClickOperation(false, position);
 
     private AdapterView.OnItemLongClickListener gridViewLongClickListener
-            = new AdapterView.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            buttonClickOperation(true, position);
-            return true;
-        }
-    };
+            = (parent, view, position, id) -> {
+                buttonClickOperation(true, position);
+                return true;
+            };
 
     private void buttonClickOperation(boolean longClick, int position) {
         if (IS_CHANGED) {
@@ -214,13 +201,13 @@ public class EditRecordActivity extends AppCompatActivity
                     CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(" ");
                     CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(
                             CoCoinUtil.FLOATINGLABELS[CoCoinFragmentManager.editRecordActivityEditMoneyFragment
-                                    .getNumberText().toString().length()]);
+                                    .getNumberText().length()]);
                 } else {
                     CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setNumberText(
-                            CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString()
+                            CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText()
                             .substring(0, CoCoinFragmentManager.editRecordActivityEditMoneyFragment
-                                    .getNumberText().toString().length() - 1));
-                    if (CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString().length() == 0) {
+                                    .getNumberText().length() - 1));
+                    if (CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().length() == 0) {
                         CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setNumberText("0");
                         CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(" ");
                     }
@@ -234,18 +221,18 @@ public class EditRecordActivity extends AppCompatActivity
                 } else {
                     CoCoinFragmentManager.editRecordActivityEditMoneyFragment
                             .setNumberText(CoCoinFragmentManager.editRecordActivityEditMoneyFragment
-                                    .getNumberText().toString() + CoCoinUtil.BUTTONS[position]);
+                                    .getNumberText() + CoCoinUtil.BUTTONS[position]);
                 }
             }
         }
         CoCoinFragmentManager.editRecordActivityEditMoneyFragment.setHelpText(CoCoinUtil.FLOATINGLABELS[
-                CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString().length()]);
+                CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().length()]);
     }
 
     private void commit() {
         if (CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getTagId() == -1) {
             showToast(NO_TAG_TOAST);
-        } else if (CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().toString().equals("0")) {
+        } else if (CoCoinFragmentManager.editRecordActivityEditMoneyFragment.getNumberText().equals("0")) {
             showToast(NO_MONEY_TOAST);
         } else  {
             CoCoinRecord coCoinRecord = new CoCoinRecord();

@@ -17,7 +17,7 @@ public class CoCoinFragmentManager {
     public static EditMoneyFragment editRecordActivityEditMoneyFragment = null;
     public static EditRemarkFragment editRecordActivityEditRemarkFragment = null;
 
-    public static PasswordChangeFragment passwordChangeFragment[] = new PasswordChangeFragment[3];
+    public static PasswordChangeFragment[] passwordChangeFragment = new PasswordChangeFragment[3];
 
     public static ArrayList<TagChooseFragment> tagChooseFragments = new ArrayList<>();
 

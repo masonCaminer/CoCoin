@@ -35,7 +35,7 @@ public class HelpActivity extends AppCompatActivity implements HelpFeedbackFragm
         mContext = this;
         setContentView(R.layout.activity_help);
 
-        mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
+        mViewPager = findViewById(R.id.materialViewPager);
 
         mViewPager.getPagerTitleStrip().setTypeface(CoCoinUtil.getInstance().typefaceLatoLight, Typeface.NORMAL);
         mViewPager.getPagerTitleStrip().setAllCaps(false);
@@ -63,12 +63,7 @@ public class HelpActivity extends AppCompatActivity implements HelpFeedbackFragm
 
         View logo = findViewById(R.id.logo_white);
         if (logo != null) {
-            logo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mViewPager.notifyHeaderChanged();
-                }
-            });
+            logo.setOnClickListener(v -> mViewPager.notifyHeaderChanged());
         }
 
         adapter = new HelpFragmentAdapter(getSupportFragmentManager(), 0);
@@ -78,15 +73,10 @@ public class HelpActivity extends AppCompatActivity implements HelpFeedbackFragm
         mViewPager.getPagerTitleStrip().invalidate();
         mViewPager.getViewPager().setOffscreenPageLimit(2);
 
-        mViewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
-            @Override
-            public HeaderDesign getHeaderDesign(int page) {
-                return HeaderDesign.fromColorAndDrawable(
-                        ContextCompat.getColor(CoCoinApplication.getAppContext(), R.color.my_blue),
-                        ContextCompat.getDrawable(
-                                CoCoinApplication.getAppContext(), R.drawable.cocoin_blue_bg));
-            }
-        });
+        mViewPager.setMaterialViewPagerListener(page -> HeaderDesign.fromColorAndDrawable(
+                ContextCompat.getColor(CoCoinApplication.getAppContext(), R.color.my_blue),
+                ContextCompat.getDrawable(
+                        CoCoinApplication.getAppContext(), R.drawable.cocoin_blue_bg)));
 
     }
 

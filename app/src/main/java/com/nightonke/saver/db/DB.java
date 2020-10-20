@@ -56,7 +56,7 @@ public class DB {
                 tag.setWeight(cursor.getInt(cursor.getColumnIndex("WEIGHT")));
                 RecordManager.TAGS.add(tag);
             } while (cursor.moveToNext());
-            if (cursor != null) cursor.close();
+            cursor.close();
         }
 
         cursor = sqliteDatabase
@@ -73,14 +73,14 @@ public class DB {
                 coCoinRecord.setUserId(cursor.getString(cursor.getColumnIndex("USER_ID")));
                 coCoinRecord.setLocalObjectId(cursor.getString(cursor.getColumnIndex("OBJECT_ID")));
                 coCoinRecord.setIsUploaded(
-                        cursor.getInt(cursor.getColumnIndex("IS_UPLOADED")) == 0 ? false : true);
+                        cursor.getInt(cursor.getColumnIndex("IS_UPLOADED")) != 0);
 
                 if (BuildConfig.DEBUG) Log.d("CoCoin Debugger", "Load " + coCoinRecord.toString() + " S");
 
                 RecordManager.RECORDS.add(coCoinRecord);
                 RecordManager.SUM += (int) coCoinRecord.getMoney();
             } while (cursor.moveToNext());
-            if (cursor != null) cursor.close();
+            cursor.close();
         }
     }
 

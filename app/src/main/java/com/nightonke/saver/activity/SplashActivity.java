@@ -121,7 +121,7 @@ public class SplashActivity extends Activity {
             public void onAnimationEnd() {
                 Log.d("CoCoin", "Showing animation completed");
                 showAnimationCompleted = true;
-                if (loadDataCompleted && showAnimationCompleted && !activityStarted) {
+                if (loadDataCompleted && !activityStarted) {
                     activityStarted = true;
                     startActivity(new Intent(mContext, MainActivity.class));
                     finish();
@@ -166,7 +166,7 @@ public class SplashActivity extends Activity {
             Log.d("CoCoin", "Loading Data completed");
             loadingText.setText(mContext.getResources().getString(R.string.loaded));
             loadDataCompleted = true;
-            if (loadDataCompleted && showAnimationCompleted && !activityStarted) {
+            if (showAnimationCompleted && !activityStarted) {
                 activityStarted = true;
                 startActivity(new Intent(mContext, MainActivity.class));
                 finish();

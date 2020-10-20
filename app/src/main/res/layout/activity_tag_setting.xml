@@ -58,7 +58,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_gravity="center_vertical|right"
+                android:layout_gravity="center_vertical|end"
                 app:materialIcon="check"
                 app:materialIconColor="@color/white"
                 app:materialIconSize="24dp"

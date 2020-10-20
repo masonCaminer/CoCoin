@@ -88,7 +88,7 @@ public class EditPasswordActivity extends AppCompatActivity {
             // do something for phones running an SDK before lollipop
         }
 
-        viewPager = (ViewPager)findViewById(R.id.viewpager);
+        viewPager = findViewById(R.id.viewpager);
 
         try {
             Interpolator sInterpolator = new AccelerateInterpolator();
@@ -111,7 +111,7 @@ public class EditPasswordActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
 
-        myGridView = (MyGridView)findViewById(R.id.gridview);
+        myGridView = findViewById(R.id.gridview);
         myGridViewAdapter = new PasswordChangeButtonGridViewAdapter(this);
         myGridView.setAdapter(myGridViewAdapter);
 
@@ -130,17 +130,12 @@ public class EditPasswordActivity extends AppCompatActivity {
                     }
                 });
 
-        back = (MaterialIconView)findViewById(R.id.back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        back = findViewById(R.id.back);
+        back.setOnClickListener(v -> onBackPressed());
 
         superToast = new SuperToast(this);
 
-        title = (TextView)findViewById(R.id.title);
+        title = findViewById(R.id.title);
         title.setTypeface(CoCoinUtil.typefaceLatoLight);
         if (SettingManager.getInstance().getFirstTime()) {
             title.setText(mContext.getResources().getString(R.string.app_name));
@@ -163,22 +158,14 @@ public class EditPasswordActivity extends AppCompatActivity {
         super.finish();
     }
 
-    private AdapterView.OnItemClickListener gridViewClickListener
-            = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            buttonClickOperation(false, position);
-        }
-    };
+    private final AdapterView.OnItemClickListener gridViewClickListener
+            = (parent, view, position, id) -> buttonClickOperation(false, position);
 
-    private AdapterView.OnItemLongClickListener gridViewLongClickListener
-            = new AdapterView.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            buttonClickOperation(true, position);
-            return true;
-        }
-    };
+    private final AdapterView.OnItemLongClickListener gridViewLongClickListener
+            = (parent, view, position, id) -> {
+                buttonClickOperation(true, position);
+                return true;
+            };
 
     private void buttonClickOperation(boolean longClick, int position) {
         switch (CURRENT_STATE) {
@@ -356,12 +343,6 @@ public class EditPasswordActivity extends AppCompatActivity {
                 y1 = ev.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                x2 = ev.getX();
-                y2 = ev.getY();
-                if (Math.abs(x1 - x2) > 20) {
-                    return true;
-                }
-                break;
             case MotionEvent.ACTION_UP:
                 x2 = ev.getX();
                 y2 = ev.getY();

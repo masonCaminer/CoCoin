@@ -31,6 +31,8 @@ import com.nightonke.saver.model.SettingManager;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
+import java.util.Objects;
+
 public class TagSettingActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
@@ -94,8 +96,8 @@ public class TagSettingActivity extends AppCompatActivity {
         mRecyclerView.setItemAnimator(animator);
 
         mRecyclerView.addItemDecoration(
-                new ItemShadowDecorator((NinePatchDrawable) ContextCompat.
-                        getDrawable(this, R.drawable.material_shadow_z1)));
+                new ItemShadowDecorator((NinePatchDrawable) Objects.requireNonNull(ContextCompat.
+                        getDrawable(this, R.drawable.material_shadow_z1))));
 
         mRecyclerViewDragDropManager.attachRecyclerView(mRecyclerView);
 
@@ -119,7 +121,7 @@ public class TagSettingActivity extends AppCompatActivity {
     }
 
     private void whetherQuit() {
-        if (!myItemAdapter.equals(null)) {
+        if (myItemAdapter != null) {
             if (myItemAdapter.isChanged()) {
                 new MaterialDialog.Builder(this)
                         .title(R.string.whether_save)
@@ -147,7 +149,7 @@ public class TagSettingActivity extends AppCompatActivity {
 
     MaterialDialog progressDialog;
     private void saveChanges(boolean quit) {
-        if (!myItemAdapter.equals(null)) {
+        if (myItemAdapter != null) {
             if (myItemAdapter.isChanged()) {
                 progressDialog = new MaterialDialog.Builder(this)
                         .title(R.string.saving_tags_title)
@@ -189,7 +191,7 @@ public class TagSettingActivity extends AppCompatActivity {
 
     public class SaveTags extends AsyncTask<String, Void, String> {
 
-        private boolean quit;
+        private final boolean quit;
 
         public SaveTags(boolean quit) {
             this.quit = quit;

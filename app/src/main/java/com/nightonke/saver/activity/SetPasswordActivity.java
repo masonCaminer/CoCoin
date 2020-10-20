@@ -155,7 +155,7 @@ public class SetPasswordActivity extends AppCompatActivity {
         super.finish();
     }
 
-    private AdapterView.OnItemClickListener gridViewClickListener
+    private final AdapterView.OnItemClickListener gridViewClickListener
             = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -163,7 +163,7 @@ public class SetPasswordActivity extends AppCompatActivity {
         }
     };
 
-    private AdapterView.OnItemLongClickListener gridViewLongClickListener
+    private final AdapterView.OnItemLongClickListener gridViewLongClickListener
             = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -315,12 +315,6 @@ public class SetPasswordActivity extends AppCompatActivity {
                 y1 = ev.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                x2 = ev.getX();
-                y2 = ev.getY();
-                if (Math.abs(x1 - x2) > 20) {
-                    return true;
-                }
-                break;
             case MotionEvent.ACTION_UP:
                 x2 = ev.getX();
                 y2 = ev.getY();

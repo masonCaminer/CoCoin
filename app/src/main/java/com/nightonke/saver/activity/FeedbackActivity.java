@@ -63,12 +63,7 @@ public class FeedbackActivity extends AppCompatActivity implements HelpFeedbackF
 
         View logo = findViewById(R.id.logo_white);
         if (logo != null) {
-            logo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mViewPager.notifyHeaderChanged();
-                }
-            });
+            logo.setOnClickListener(v -> mViewPager.notifyHeaderChanged());
         }
 
         adapter = new HelpFragmentAdapter(getSupportFragmentManager(), 1);
@@ -78,15 +73,10 @@ public class FeedbackActivity extends AppCompatActivity implements HelpFeedbackF
         mViewPager.getPagerTitleStrip().invalidate();
         mViewPager.getViewPager().setOffscreenPageLimit(2);
 
-        mViewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
-            @Override
-            public HeaderDesign getHeaderDesign(int page) {
-                return HeaderDesign.fromColorAndDrawable(
-                        ContextCompat.getColor(CoCoinApplication.getAppContext(), R.color.my_blue),
-                        ContextCompat.getDrawable(
-                                CoCoinApplication.getAppContext(), R.drawable.cocoin_blue_bg));
-            }
-        });
+        mViewPager.setMaterialViewPagerListener(page -> HeaderDesign.fromColorAndDrawable(
+                ContextCompat.getColor(CoCoinApplication.getAppContext(), R.color.my_blue),
+                ContextCompat.getDrawable(
+                        CoCoinApplication.getAppContext(), R.drawable.cocoin_blue_bg)));
 
     }
 

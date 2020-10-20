@@ -50,6 +50,7 @@ import com.nightonke.saver.util.CoCoinUtil;
 import com.rey.material.widget.RadioButton;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -93,7 +94,7 @@ public class MainActivity extends AppCompatActivity
     private LinearLayout transparentLy;
     private LinearLayout guillotineColorLy;
     private boolean isPassword = false;
-    private long RIPPLE_DURATION = 250;
+    private final long RIPPLE_DURATION = 250;
     private GuillotineAnimation animation;
     private String inputPassword = "";
     private float x1, y1, x2, y2;
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity
     private Toolbar guillotineToolBar;
     private AppUpdateManager appUpdateManager;
     private SensorManager sensorManager;
-    private AdapterView.OnItemLongClickListener gridViewLongClickListener
+    private final AdapterView.OnItemLongClickListener gridViewLongClickListener
             = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -123,13 +124,13 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
     };
-    private View.OnClickListener statusButtonOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener statusButtonOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             animation.close();
         }
     };
-    private AdapterView.OnItemClickListener gridViewClickListener
+    private final AdapterView.OnItemClickListener gridViewClickListener
             = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -138,7 +139,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
     };
-    private SensorEventListener listener = new SensorEventListener() {
+    private final SensorEventListener listener = new SensorEventListener() {
 
         @Override
         public void onSensorChanged(SensorEvent event) {
@@ -218,12 +219,12 @@ public class MainActivity extends AppCompatActivity
 
         guillotineBackground = findViewById(R.id.guillotine_background);
 
-        toolBarTitle = (TextView) findViewById(R.id.guillotine_title);
+        toolBarTitle = findViewById(R.id.guillotine_title);
         toolBarTitle.setTypeface(CoCoinUtil.typefaceLatoLight);
         toolBarTitle.setText(SettingManager.getInstance().getAccountBookName());
 
 // edit viewpager///////////////////////////////////////////////////////////////////////////////////
-        editViewPager = (CoCoinScrollableViewPager) findViewById(R.id.edit_pager);
+        editViewPager = findViewById(R.id.edit_pager);
         editAdapter = new EditMoneyRemarkFragmentAdapter(getSupportFragmentManager(), CoCoinFragmentManager.MAIN_ACTIVITY_FRAGMENT);
 
         editViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -252,7 +253,7 @@ public class MainActivity extends AppCompatActivity
         editViewPager.setAdapter(editAdapter);
 
 // tag viewpager////////////////////////////////////////////////////////////////////////////////////
-        tagViewPager = (ViewPager) findViewById(R.id.viewpager);
+        tagViewPager = findViewById(R.id.viewpager);
 
         if (RecordManager.getInstance(mContext).TAGS.size() % 8 == 0)
             tagAdapter = new TagChooseFragmentAdapter(getSupportFragmentManager(), RecordManager.TAGS.size() / 8);
@@ -261,7 +262,7 @@ public class MainActivity extends AppCompatActivity
         tagViewPager.setAdapter(tagAdapter);
 
 // button grid view/////////////////////////////////////////////////////////////////////////////////
-        myGridView = (MyGridView) findViewById(R.id.gridview);
+        myGridView = findViewById(R.id.gridview);
         myGridViewAdapter = new ButtonGridViewAdapter(this);
         myGridView.setAdapter(myGridViewAdapter);
 
@@ -287,34 +288,35 @@ public class MainActivity extends AppCompatActivity
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle(null);
+            Objects.requireNonNull(getSupportActionBar()).setTitle(null);
         }
 
+        assert toolbar != null;
         toolbar.hideOverflowMenu();
 
         guillotineMenu = LayoutInflater.from(this).inflate(R.layout.guillotine, null);
         root.addView(guillotineMenu);
 
-        transparentLy = (LinearLayout) guillotineMenu.findViewById(R.id.transparent_ly);
-        guillotineColorLy = (LinearLayout) guillotineMenu.findViewById(R.id.guillotine_color_ly);
-        guillotineToolBar = (Toolbar) guillotineMenu.findViewById(R.id.toolbar);
+        transparentLy = guillotineMenu.findViewById(R.id.transparent_ly);
+        guillotineColorLy =  guillotineMenu.findViewById(R.id.guillotine_color_ly);
+        guillotineToolBar =  guillotineMenu.findViewById(R.id.toolbar);
 
-        menuToolBarTitle = (TextView) guillotineMenu.findViewById(R.id.guillotine_title);
+        menuToolBarTitle =  guillotineMenu.findViewById(R.id.guillotine_title);
         menuToolBarTitle.setTypeface(CoCoinUtil.typefaceLatoLight);
         menuToolBarTitle.setText(SettingManager.getInstance().getAccountBookName());
 
-        radioButton0 = (RadioButton) guillotineMenu.findViewById(R.id.radio_button_0);
-        radioButton1 = (RadioButton) guillotineMenu.findViewById(R.id.radio_button_1);
-        radioButton2 = (RadioButton) guillotineMenu.findViewById(R.id.radio_button_2);
-        radioButton3 = (RadioButton) guillotineMenu.findViewById(R.id.radio_button_3);
+        radioButton0 = guillotineMenu.findViewById(R.id.radio_button_0);
+        radioButton1 =  guillotineMenu.findViewById(R.id.radio_button_1);
+        radioButton2 = guillotineMenu.findViewById(R.id.radio_button_2);
+        radioButton3 = guillotineMenu.findViewById(R.id.radio_button_3);
 
-        passwordTip = (TextView) guillotineMenu.findViewById(R.id.password_tip);
+        passwordTip = guillotineMenu.findViewById(R.id.password_tip);
         passwordTip.setText(mContext.getResources().getString(R.string.password_tip));
         passwordTip.setTypeface(CoCoinUtil.typefaceLatoLight);
 
-        radioButtonLy = (LinearLayout) guillotineMenu.findViewById(R.id.radio_button_ly);
+        radioButtonLy = guillotineMenu.findViewById(R.id.radio_button_ly);
 
-        statusButton = (MaterialMenuView) guillotineMenu.findViewById(R.id.status_button);
+        statusButton = guillotineMenu.findViewById(R.id.status_button);
         statusButton.setState(MaterialMenuDrawable.IconState.ARROW);
 
         statusButton.setOnClickListener(statusButtonOnClickListener);
@@ -379,13 +381,10 @@ public class MainActivity extends AppCompatActivity
             statusButton.setClickable(false);
             showToast(PASSWORD_CORRECT_TOAST);
             final Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Intent intent = new Intent(mContext, AccountBookTodayViewActivity.class);
-                    startActivityForResult(intent, SETTING_TAG);
-                    isLoading = false;
-                }
+            handler.postDelayed(() -> {
+                Intent intent = new Intent(mContext, AccountBookTodayViewActivity.class);
+                startActivityForResult(intent, SETTING_TAG);
+                isLoading = false;
             }, 1000);
             final Handler handler2 = new Handler();
             handler2.postDelayed(new Runnable() {
@@ -427,7 +426,7 @@ public class MainActivity extends AppCompatActivity
     private void buttonClickOperation(boolean longClick, int position) {
         if (editViewPager.getCurrentItem() == 1) return;
         if (!isPassword) {
-            if (CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText().toString().equals("0")
+            if (CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText().equals("0")
                     && !CoCoinUtil.ClickButtonCommit(position)) {
                 if (CoCoinUtil.ClickButtonDelete(position)
                         || CoCoinUtil.ClickButtonIsZero(position)) {
@@ -441,14 +440,14 @@ public class MainActivity extends AppCompatActivity
                         CoCoinFragmentManager.mainActivityEditMoneyFragment.setNumberText("0");
                         CoCoinFragmentManager.mainActivityEditMoneyFragment.setHelpText(
                                 CoCoinUtil.FLOATINGLABELS[CoCoinFragmentManager.mainActivityEditMoneyFragment
-                                        .getNumberText().toString().length()]);
+                                        .getNumberText().length()]);
                     } else {
                         CoCoinFragmentManager.mainActivityEditMoneyFragment.setNumberText(
-                                CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText().toString()
+                                CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText()
                                         .substring(0, CoCoinFragmentManager.mainActivityEditMoneyFragment
-                                                .getNumberText().toString().length() - 1));
+                                                .getNumberText().length() - 1));
                         if (CoCoinFragmentManager.mainActivityEditMoneyFragment
-                                .getNumberText().toString().length() == 0) {
+                                .getNumberText().length() == 0) {
                             CoCoinFragmentManager.mainActivityEditMoneyFragment.setNumberText("0");
                             CoCoinFragmentManager.mainActivityEditMoneyFragment.setHelpText(" ");
                         }
@@ -457,13 +456,13 @@ public class MainActivity extends AppCompatActivity
                     commit();
                 } else {
                     CoCoinFragmentManager.mainActivityEditMoneyFragment.setNumberText(
-                            CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText().toString()
+                            CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText()
                                     + CoCoinUtil.BUTTONS[position]);
                 }
             }
             CoCoinFragmentManager.mainActivityEditMoneyFragment
                     .setHelpText(CoCoinUtil.FLOATINGLABELS[
-                            CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText().toString().length()]);
+                            CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText().length()]);
         } else {
             if (CoCoinUtil.ClickButtonDelete(position)) {
                 if (longClick) {
@@ -517,13 +516,13 @@ public class MainActivity extends AppCompatActivity
     private void commit() {
         if (CoCoinFragmentManager.mainActivityEditMoneyFragment.getTagId() == -1) {
             showToast(NO_TAG_TOAST);
-        } else if (CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText().toString().equals("0")) {
+        } else if (CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText().equals("0")) {
             showToast(NO_MONEY_TOAST);
         } else {
             Calendar calendar = Calendar.getInstance();
             CoCoinRecord coCoinRecord = new CoCoinRecord(
                     -1,
-                    Float.valueOf(CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText().toString()),
+                    Float.valueOf(CoCoinFragmentManager.mainActivityEditMoneyFragment.getNumberText()),
                     "RMB",
                     CoCoinFragmentManager.mainActivityEditMoneyFragment.getTagId(),
                     calendar);

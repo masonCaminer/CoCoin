@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.gaganag50.delete"
+        applicationId "com.cocoin.do"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
@@ -153,5 +153,5 @@ dependencies {
 
     implementation 'cn.bmob.android:bmob-sdk:3.4.5'
     implementation 'com.jakewharton:butterknife:9.0.0-rc2'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:9.0.0-rc2'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
 }

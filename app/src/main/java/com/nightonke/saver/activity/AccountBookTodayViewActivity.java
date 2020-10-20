@@ -144,23 +144,23 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
         setTitle("");
 
         toolbar = mViewPager.getToolbar();
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer =  findViewById(R.id.drawer_layout);
 
-        custom = (MaterialRippleLayout)mDrawer.findViewById(R.id.custom_layout);
-        tags = (MaterialRippleLayout)mDrawer.findViewById(R.id.tag_layout);
-        months = (MaterialRippleLayout)mDrawer.findViewById(R.id.month_layout);
-        list = (MaterialRippleLayout)mDrawer.findViewById(R.id.list_layout);
-        report = (MaterialRippleLayout)mDrawer.findViewById(R.id.report_layout);
-        sync = (MaterialRippleLayout)mDrawer.findViewById(R.id.sync_layout);
-        settings = (MaterialRippleLayout)mDrawer.findViewById(R.id.settings_layout);
-        help = (MaterialRippleLayout)mDrawer.findViewById(R.id.help_layout);
-        feedback = (MaterialRippleLayout)mDrawer.findViewById(R.id.feedback_layout);
-        about = (MaterialRippleLayout)mDrawer.findViewById(R.id.about_layout);
-        syncIcon = (MaterialIconView)mDrawer.findViewById(R.id.sync_icon);
+        custom = mDrawer.findViewById(R.id.custom_layout);
+        tags = mDrawer.findViewById(R.id.tag_layout);
+        months = mDrawer.findViewById(R.id.month_layout);
+        list = mDrawer.findViewById(R.id.list_layout);
+        report = mDrawer.findViewById(R.id.report_layout);
+        sync = mDrawer.findViewById(R.id.sync_layout);
+        settings = mDrawer.findViewById(R.id.settings_layout);
+        help = mDrawer.findViewById(R.id.help_layout);
+        feedback = mDrawer.findViewById(R.id.feedback_layout);
+        about = mDrawer.findViewById(R.id.about_layout);
+        syncIcon = mDrawer.findViewById(R.id.sync_icon);
         setIconEnable(syncIcon, SettingManager.getInstance().getLoggenOn());
-        monthExpenseTip = (TextView)mDrawer.findViewById(R.id.month_expense_tip);
+        monthExpenseTip = mDrawer.findViewById(R.id.month_expense_tip);
         monthExpenseTip.setTypeface(CoCoinUtil.GetTypeface());
-        monthExpense = (RiseNumberTextView)mDrawer.findViewById(R.id.month_expense);
+        monthExpense = mDrawer.findViewById(R.id.month_expense);
         monthExpense.setTypeface(CoCoinUtil.typefaceLatoLight);
 
         if (SettingManager.getInstance().getIsMonthLimit()) {
@@ -201,12 +201,7 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
 
         View logo = findViewById(R.id.logo_white);
         if (logo != null) {
-            logo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mViewPager.notifyHeaderChanged();
-                }
-            });
+            logo.setOnClickListener(v -> mViewPager.notifyHeaderChanged());
         }
 
         todayModeAdapter = new TodayViewFragmentAdapter(getSupportFragmentManager());
@@ -214,31 +209,23 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
         mViewPager.getViewPager().setAdapter(todayModeAdapter);
         mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());
 
-        mViewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
-            @Override
-            public HeaderDesign getHeaderDesign(int page) {
-                return HeaderDesign.fromColorAndDrawable(
-                        CoCoinUtil.GetTagColor(page - 2),
-                        CoCoinUtil.GetTagDrawable(-3)
-                );
-            }
-        });
+        mViewPager.setMaterialViewPagerListener(page -> HeaderDesign.fromColorAndDrawable(
+                CoCoinUtil.GetTagColor(page - 2),
+                CoCoinUtil.GetTagDrawable(-3)
+        ));
 
         setListeners();
 
-        profileImage= (CircleImageView)mDrawer.findViewById(R.id.profile_image);
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (SettingManager.getInstance().getLoggenOn()) {
-                    CoCoinUtil.showToast(mContext, R.string.change_logo_tip);
-                } else {
-                    CoCoinUtil.showToast(mContext, R.string.login_tip);
-                }
+        profileImage= mDrawer.findViewById(R.id.profile_image);
+        profileImage.setOnClickListener(v -> {
+            if (SettingManager.getInstance().getLoggenOn()) {
+                CoCoinUtil.showToast(mContext, R.string.change_logo_tip);
+            } else {
+                CoCoinUtil.showToast(mContext, R.string.login_tip);
             }
         });
 
-        mDemoSlider = (SliderLayout)findViewById(R.id.slider);
+        mDemoSlider = findViewById(R.id.slider);
 
         HashMap<String, Integer> urls = CoCoinUtil.GetDrawerTopUrl();
 
@@ -253,7 +240,7 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
         mDemoSlider.setPresetTransformer(SliderLayout.Transformer.ZoomOut);
         mDemoSlider.setCustomAnimation(new DescriptionAnimation());
         mDemoSlider.setDuration(4000);
-        mDemoSlider.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
+        mDemoSlider.setCustomIndicator( findViewById(R.id.custom_indicator));
 
         loadLogo();
 
@@ -338,12 +325,9 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
                     .content(R.string.sync_querying_content)
                     .negativeText(R.string.cancel)
                     .progress(true, 0)
-                    .onAny(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            if (which == DialogAction.NEGATIVE) {
+                    .onAny((dialog, which) -> {
+                        if (which == DialogAction.NEGATIVE) {
 
-                            }
                         }
                     })
                     .show();
@@ -419,17 +403,15 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
                                                     .content(subContent)
                                                     .positiveText(R.string.ok_1)
                                                     .negativeText(R.string.cancel)
-                                                    .onAny(new MaterialDialog.SingleButtonCallback() {
-                                                        @Override
-                                                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                                            if (which == DialogAction.POSITIVE) {
-                                                                syncProgressDialog = new MaterialDialog.Builder(mContext)
-                                                                        .title(R.string.syncing)
-                                                                        .content(CoCoinUtil.GetString(CoCoinApplication.getAppContext(), R.string.uploading_0) + "1" + CoCoinUtil.GetString(mContext, R.string.uploading_1))
-                                                                        .progress(false, RecordManager.getInstance(CoCoinApplication.getAppContext()).RECORDS.size(), true)
-                                                                        .cancelable(false)
-                                                                        .show();
-                                                                final String databasePath = CoCoinUtil.GetRecordDatabasePath(CoCoinApplication.getAppContext());
+                                                    .onAny((dialog1, which1) -> {
+                                                        if (which1 == DialogAction.POSITIVE) {
+                                                            syncProgressDialog = new MaterialDialog.Builder(mContext)
+                                                                    .title(R.string.syncing)
+                                                                    .content(CoCoinUtil.GetString(CoCoinApplication.getAppContext(), R.string.uploading_0) + "1" + CoCoinUtil.GetString(mContext, R.string.uploading_1))
+                                                                    .progress(false, RecordManager.getInstance(CoCoinApplication.getAppContext()).RECORDS.size(), true)
+                                                                    .cancelable(false)
+                                                                    .show();
+                                                            final String databasePath = CoCoinUtil.GetRecordDatabasePath(CoCoinApplication.getAppContext());
 //                                                                final BmobFile bmobFile = new BmobFile(new File(databasePath));
 //                                                                bmobFile.uploadblock(mContext, new UploadFileListener() {
 //
@@ -509,77 +491,76 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
 //                                                                                .show();
 //                                                                    }
 //                                                                });
-                                                                BmobProFile.getInstance(CoCoinApplication.getAppContext()).upload(databasePath, new UploadListener() {
-                                                                    @Override
-                                                                    public void onSuccess(String fileName, String url, BmobFile file) {
-                                                                        CoCoinUtil.deleteBmobUploadCach(CoCoinApplication.getAppContext());
-                                                                        if (BuildConfig.DEBUG) {
-                                                                            Log.d("CoCoin", "Upload successfully fileName: " + fileName);
-                                                                            Log.d("CoCoin", "Upload successfully url: " + url);
-                                                                        }
-                                                                        // the new database is uploaded successfully
-                                                                        // delete the old database(if there is)
-                                                                        if (cloudOldDatabaseFileName != null) {
-                                                                            deleteOldDatabaseOnCloud(cloudOldDatabaseFileName);
-                                                                        }
-                                                                        // update the UploadInfo record for the new url
-                                                                        UploadInfo uploadInfo = new UploadInfo();
-                                                                        uploadInfo.setUserId(user.getObjectId());
-                                                                        uploadInfo.setRecordNumber(RecordManager.getInstance(CoCoinApplication.getAppContext()).RECORDS.size());
-                                                                        uploadInfo.setDatabaseUrl(file.getFileUrl(CoCoinApplication.getAppContext()));
-                                                                        uploadInfo.setFileName(fileName);
-                                                                        if (uploadObjectId == null) {
-                                                                            // insert
-                                                                            uploadInfo.save(CoCoinApplication.getAppContext(), new SaveListener() {
-                                                                                @Override
-                                                                                public void onSuccess() {
-                                                                                    // upload successfully
-                                                                                    syncProgressDialog.dismiss();
-                                                                                    new MaterialDialog.Builder(mContext)
-                                                                                            .title(R.string.sync_completely_title)
-                                                                                            .content(RecordManager.getInstance(CoCoinApplication.getAppContext()).RECORDS.size() + CoCoinUtil.GetString(CoCoinApplication.getAppContext(), R.string.uploading_fail_1))
-                                                                                            .positiveText(R.string.ok_1)
-                                                                                            .cancelable(false)
-                                                                                            .show();
-                                                                                }
-                                                                                @Override
-                                                                                public void onFailure(int code, String arg0) {
-                                                                                    uploadFailed(code, arg0);
-                                                                                }
-                                                                            });
-                                                                        } else {
-                                                                            // update
-                                                                            uploadInfo.update(CoCoinApplication.getAppContext(), uploadObjectId, new UpdateListener() {
-                                                                                @Override
-                                                                                public void onSuccess() {
-                                                                                    // upload successfully
-                                                                                    syncProgressDialog.dismiss();
-                                                                                    new MaterialDialog.Builder(mContext)
-                                                                                            .title(R.string.sync_completely_title)
-                                                                                            .content(RecordManager.getInstance(CoCoinApplication.getAppContext()).RECORDS.size() + CoCoinUtil.GetString(CoCoinApplication.getAppContext(), R.string.uploading_fail_1))
-                                                                                            .positiveText(R.string.ok_1)
-                                                                                            .cancelable(false)
-                                                                                            .show();
-                                                                                }
-                                                                                @Override
-                                                                                public void onFailure(int code, String msg) {
-                                                                                    uploadFailed(code, msg);
-                                                                                }
-                                                                            });
-                                                                        }
+                                                            BmobProFile.getInstance(CoCoinApplication.getAppContext()).upload(databasePath, new UploadListener() {
+                                                                @Override
+                                                                public void onSuccess(String fileName, String url, BmobFile file) {
+                                                                    CoCoinUtil.deleteBmobUploadCach(CoCoinApplication.getAppContext());
+                                                                    if (BuildConfig.DEBUG) {
+                                                                        Log.d("CoCoin", "Upload successfully fileName: " + fileName);
+                                                                        Log.d("CoCoin", "Upload successfully url: " + url);
                                                                     }
-                                                                    @Override
-                                                                    public void onProgress(int progress) {
-                                                                        syncProgressDialog.setProgress((int)(progress * 1.0 / 100 * RecordManager.getInstance(CoCoinApplication.getAppContext()).RECORDS.size()));
+                                                                    // the new database is uploaded successfully
+                                                                    // delete the old database(if there is)
+                                                                    if (cloudOldDatabaseFileName != null) {
+                                                                        deleteOldDatabaseOnCloud(cloudOldDatabaseFileName);
                                                                     }
+                                                                    // update the UploadInfo record for the new url
+                                                                    UploadInfo uploadInfo = new UploadInfo();
+                                                                    uploadInfo.setUserId(user.getObjectId());
+                                                                    uploadInfo.setRecordNumber(RecordManager.getInstance(CoCoinApplication.getAppContext()).RECORDS.size());
+                                                                    uploadInfo.setDatabaseUrl(file.getFileUrl(CoCoinApplication.getAppContext()));
+                                                                    uploadInfo.setFileName(fileName);
+                                                                    if (uploadObjectId == null) {
+                                                                        // insert
+                                                                        uploadInfo.save(CoCoinApplication.getAppContext(), new SaveListener() {
+                                                                            @Override
+                                                                            public void onSuccess() {
+                                                                                // upload successfully
+                                                                                syncProgressDialog.dismiss();
+                                                                                new MaterialDialog.Builder(mContext)
+                                                                                        .title(R.string.sync_completely_title)
+                                                                                        .content(RecordManager.getInstance(CoCoinApplication.getAppContext()).RECORDS.size() + CoCoinUtil.GetString(CoCoinApplication.getAppContext(), R.string.uploading_fail_1))
+                                                                                        .positiveText(R.string.ok_1)
+                                                                                        .cancelable(false)
+                                                                                        .show();
+                                                                            }
+                                                                            @Override
+                                                                            public void onFailure(int code, String arg0) {
+                                                                                uploadFailed(code, arg0);
+                                                                            }
+                                                                        });
+                                                                    } else {
+                                                                        // update
+                                                                        uploadInfo.update(CoCoinApplication.getAppContext(), uploadObjectId, new UpdateListener() {
+                                                                            @Override
+                                                                            public void onSuccess() {
+                                                                                // upload successfully
+                                                                                syncProgressDialog.dismiss();
+                                                                                new MaterialDialog.Builder(mContext)
+                                                                                        .title(R.string.sync_completely_title)
+                                                                                        .content(RecordManager.getInstance(CoCoinApplication.getAppContext()).RECORDS.size() + CoCoinUtil.GetString(CoCoinApplication.getAppContext(), R.string.uploading_fail_1))
+                                                                                        .positiveText(R.string.ok_1)
+                                                                                        .cancelable(false)
+                                                                                        .show();
+                                                                            }
+                                                                            @Override
+                                                                            public void onFailure(int code, String msg) {
+                                                                                uploadFailed(code, msg);
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                }
+                                                                @Override
+                                                                public void onProgress(int progress) {
+                                                                    syncProgressDialog.setProgress((int)(progress * 1.0 / 100 * RecordManager.getInstance(CoCoinApplication.getAppContext()).RECORDS.size()));
+                                                                }
 
-                                                                    @Override
-                                                                    public void onError(int statuscode, String errormsg) {
-                                                                        // upload failed
-                                                                        uploadFailed(statuscode, errormsg);
-                                                                    }
-                                                                });
-                                                            }
+                                                                @Override
+                                                                public void onError(int statuscode, String errormsg) {
+                                                                    // upload failed
+                                                                    uploadFailed(statuscode, errormsg);
+                                                                }
+                                                            });
                                                         }
                                                     })
                                                     .show();
