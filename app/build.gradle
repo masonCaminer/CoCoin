@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.cocoin.do"
+        applicationId "com.nightonke.cocoin"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
@@ -20,6 +20,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lintOptions {//设置编译的lint开关，程序在buid的时候，会执行lint检查，有任何的错误或者警告提示，都会终止构建
+        abortOnError false
     }
 }
 
