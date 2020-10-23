@@ -1,5 +1,6 @@
 package com.nightonke.saver.adapter;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
@@ -44,9 +45,9 @@ public class TagDraggableItemAdapter
 
         public MyViewHolder(View v) {
             super(v);
-            mContainer = (FrameLayout) v.findViewById(R.id.container);
-            tagImage = (ImageView)v.findViewById(R.id.tag_image);
-            tagName = (TextView)v.findViewById(R.id.tag_name);
+            mContainer = v.findViewById(R.id.container);
+            tagImage = v.findViewById(R.id.tag_image);
+            tagName = v.findViewById(R.id.tag_name);
         }
     }
 
@@ -91,6 +92,7 @@ public class TagDraggableItemAdapter
         return 0;
     }
 
+    @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());

@@ -122,7 +122,7 @@ public class EditPasswordActivity extends AppCompatActivity {
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        myGridView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        myGridView.getViewTreeObserver().addOnGlobalLayoutListener(this);
                         View lastChild = myGridView.getChildAt(myGridView.getChildCount() - 1);
                         myGridView.setLayoutParams(
                                 new LinearLayout.LayoutParams(

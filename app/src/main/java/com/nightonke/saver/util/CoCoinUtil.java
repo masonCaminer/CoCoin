@@ -33,13 +33,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by 伟平 on 2015/10/16.
@@ -178,7 +172,7 @@ public class CoCoinUtil {
             R.string.december
     };
 
-    public static int TODAY_VIEW_TITLE[] = {
+    public static int[] TODAY_VIEW_TITLE = {
             R.string.today_view_today,
             R.string.today_view_yesterday,
             R.string.today_view_this_week,
@@ -482,9 +476,9 @@ public class CoCoinUtil {
 
     public static String GetSpendString(double money) {
         if ("zh".equals(Locale.getDefault().getLanguage()))
-            return "消费 ¥" + (int)money;
+            return "消费 ¥" + (int) money;
         else
-            return "Spend $" + (int)money + " ";
+            return "Spend $" + (int) money + " ";
     }
 
     public static String GetPercentString(double percent) {
@@ -546,7 +540,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetTodayLeftRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -556,7 +550,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetTodayRightRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 0);
@@ -566,7 +560,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetYesterdayLeftRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -577,7 +571,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetYesterdayRightRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.HOUR_OF_DAY, 23);
         calendar.set(Calendar.MINUTE, 59);
         calendar.set(Calendar.SECOND, 0);
@@ -589,7 +583,7 @@ public class CoCoinUtil {
 
     public static Calendar GetThisWeekLeftRange(Calendar today) {
         int nowDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -606,14 +600,14 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetThisWeekRightRange(Calendar today) {
-            Calendar calendar = (Calendar) GetThisWeekLeftRange(today).clone();
-            calendar.add(Calendar.DATE, 7);
+        Calendar calendar = (Calendar) GetThisWeekLeftRange(today).clone();
+        calendar.add(Calendar.DATE, 7);
         return calendar;
     }
 
     public static Calendar GetLastWeekLeftRange(Calendar today) {
         int nowDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -637,7 +631,7 @@ public class CoCoinUtil {
 
     public static Calendar GetNextWeekLeftRange(Calendar today) {
         int nowDayOfWeek = today.get(Calendar.DAY_OF_WEEK);
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
@@ -678,7 +672,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetThisMonthLeftRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -689,7 +683,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetThisMonthRightRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.add(Calendar.MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -701,7 +695,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetLastMonthLeftRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -713,7 +707,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetLastMonthRightRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
@@ -724,7 +718,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetThisYearLeftRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.MONTH, 0);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -736,7 +730,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetThisYearRightRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.MONTH, 0);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.add(Calendar.YEAR, 1);
@@ -749,7 +743,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetLastYearLeftRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.MONTH, 0);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -762,7 +756,7 @@ public class CoCoinUtil {
     }
 
     public static Calendar GetLastYearRightRange(Calendar today) {
-        Calendar calendar = (Calendar)today.clone();
+        Calendar calendar = (Calendar) today.clone();
         calendar.set(Calendar.MONTH, 0);
         calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -804,7 +798,7 @@ public class CoCoinUtil {
 
     private static Random random;
 
-    private static String[] Colors = {"#F44336",
+    private static final String[] Colors = {"#F44336",
             "#E91E63",
             "#9C27B0",
             "#673AB7",
@@ -873,19 +867,17 @@ public class CoCoinUtil {
     }
 
     public static <K, V extends Comparable<V>> Map<K, V> SortTreeMapByValues(final Map<K, V> map) {
-        Comparator<K> valueComparator =  new Comparator<K>() {
-            public int compare(K k1, K k2) {
-                int compare = map.get(k1).compareTo(map.get(k2));
-                if (compare == 0) return 1;
-                else return compare;
-            }
+        Comparator<K> valueComparator = (k1, k2) -> {
+            int compare = Objects.requireNonNull(map.get(k1)).compareTo(map.get(k2));
+            if (compare == 0) return 1;
+            else return compare;
         };
         TreeMap<K, V> sortedByValues = new TreeMap<K, V>(valueComparator);
         sortedByValues.putAll(map);
         return sortedByValues;
     }
 
-    private static final int[] EMPTY_STATE = new int[] {};
+    private static final int[] EMPTY_STATE = new int[]{};
 
     public static void clearState(Drawable drawable) {
         if (drawable != null) {
@@ -894,7 +886,7 @@ public class CoCoinUtil {
     }
 
     public static class MyShakeAnimator extends BaseViewAnimator {
-        private int amplitude;
+        private final int amplitude;
 
         public MyShakeAnimator() {
             amplitude = 25;
@@ -906,8 +898,8 @@ public class CoCoinUtil {
 
         @Override
         public void prepare(View target) {
-            int amplitude1 = (int)(amplitude * 0.4);
-            int amplitude2 = (int)(amplitude * 0.2);
+            int amplitude1 = (int) (amplitude * 0.4);
+            int amplitude2 = (int) (amplitude * 0.2);
             getAnimatorAgent().playTogether(
                     ObjectAnimator.ofFloat(target, "translationX", 0, amplitude, -amplitude,
                             amplitude, -amplitude, amplitude, -amplitude, amplitude, -amplitude,
@@ -934,9 +926,9 @@ public class CoCoinUtil {
 
     public static int getDeeperColor(int color) {
         int alpha = Color.alpha(color);
-        int red = (int)(Color.red(color) * 0.8);
-        int green = (int)(Color.green(color) * 0.8);
-        int blue = (int)(Color.blue(color) * 0.8);
+        int red = (int) (Color.red(color) * 0.8);
+        int green = (int) (Color.green(color) * 0.8);
+        int blue = (int) (Color.blue(color) * 0.8);
         return Color.argb(alpha, red, green, blue);
     }
 
@@ -964,13 +956,12 @@ public class CoCoinUtil {
 
     public static int dpToPx(int dp) {
         DisplayMetrics displayMetrics = CoCoinApplication.getAppContext().getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
     public static int getToolBarHeight(Context context) {
         final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
-                new int[] { android.R.attr.actionBarSize });
+                new int[]{android.R.attr.actionBarSize});
         int mActionBarSize = (int) styledAttributes.getDimension(0, 0);
         styledAttributes.recycle();
         return mActionBarSize;
@@ -1006,6 +997,7 @@ public class CoCoinUtil {
     }
 
     private static String lastToast = "";
+
     public static void showToast(Context context, String text) {
         if (context == null) return;
         if (lastToast.equals(text)) {
@@ -1025,7 +1017,6 @@ public class CoCoinUtil {
 
     public static void showToast(Context context, int textId) {
         String text = context.getResources().getString(textId);
-        if (context == null) return;
         if (lastToast.equals(text)) {
             SuperToast.cancelAllSuperToasts();
         } else {
@@ -1041,37 +1032,33 @@ public class CoCoinUtil {
         superToast.show();
     }
 
-    public static boolean isPointInsideView(float x, float y, View view){
-        int location[] = new int[2];
+    public static boolean isPointInsideView(float x, float y, View view) {
+        int[] location = new int[2];
         view.getLocationOnScreen(location);
         int viewX = location[0];
         int viewY = location[1];
 
         //point is inside view bounds
-        if(( x > viewX && x < (viewX + view.getWidth())) &&
-                ( y > viewY && y < (viewY + view.getHeight()))){
-            return true;
-        } else {
-            return false;
-        }
+        return (x > viewX && x < (viewX + view.getWidth())) &&
+                (y > viewY && y < (viewY + view.getHeight()));
     }
 
     public static int GetScreenWidth(Context context) {
-        Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
+        Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         return size.x;
     }
 
     public static int GetScreenHeight(Context context) {
-        Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
+        Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         return size.y;
     }
 
     public static Point GetScreenSize(Context context) {
-        Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
+        Display display = ((Activity) context).getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         return size;
@@ -1189,51 +1176,10 @@ public class CoCoinUtil {
         return counter;
     }
 
-    public static void copyToClipboard(String content, Context context)
-    {
-        ClipboardManager cmb = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+    public static void copyToClipboard(String content, Context context) {
+        ClipboardManager cmb = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         cmb.setText(content.trim());
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private static CoCoinUtil ourInstance = new CoCoinUtil();

@@ -62,6 +62,6 @@ public class ReportTagAdapter extends BaseAdapter {
     }
 
     private int min(int a, int b) {
-        return (a < b ? a : b);
+        return (Math.min(a, b));
     }
 }

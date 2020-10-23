@@ -319,7 +319,7 @@ public class ShowActivity extends AppCompatActivity {
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        myGridView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                        myGridView.getViewTreeObserver().addOnGlobalLayoutListener(this);
                         View lastChild = myGridView.getChildAt(myGridView.getChildCount() - 1);
                         RelativeLayout.LayoutParams relativeLayout = new RelativeLayout.LayoutParams(
                                 ViewGroup.LayoutParams.FILL_PARENT, lastChild.getBottom());
@@ -369,22 +369,14 @@ public class ShowActivity extends AppCompatActivity {
         super.finish();
     }
 
-    private AdapterView.OnItemClickListener gridViewClickListener
-            = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            buttonClickOperation(false, position);
-        }
-    };
+    private final AdapterView.OnItemClickListener gridViewClickListener
+            = (parent, view, position, id) -> buttonClickOperation(false, position);
 
-    private AdapterView.OnItemLongClickListener gridViewLongClickListener
-            = new AdapterView.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            buttonClickOperation(true, position);
-            return true;
-        }
-    };
+    private final AdapterView.OnItemLongClickListener gridViewLongClickListener
+            = (parent, view, position, id) -> {
+                buttonClickOperation(true, position);
+                return true;
+            };
 
     private void buttonClickOperation(boolean longClick, int position) {
         switch (CURRENT_STATE) {

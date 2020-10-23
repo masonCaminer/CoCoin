@@ -83,10 +83,10 @@ public class AccountBookTagViewActivity extends AppCompatActivity {
         mContext = this;
         setContentView(R.layout.activity_account_book_tag_view);
 
-        mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
+        mViewPager = findViewById(R.id.materialViewPager);
 
         View view = mViewPager.getRootView();
-        TextView title = (TextView)view.findViewById(R.id.logo_white);
+        TextView title = view.findViewById(R.id.logo_white);
         title.setTypeface(CoCoinUtil.typefaceLatoLight);
         title.setText(SettingManager.getInstance().getAccountBookName());
 
@@ -95,10 +95,10 @@ public class AccountBookTagViewActivity extends AppCompatActivity {
         setTitle("");
 
         toolbar = mViewPager.getToolbar();
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = findViewById(R.id.drawer_layout);
 
-        userName = (TextView)findViewById(R.id.user_name);
-        userEmail = (TextView)findViewById(R.id.user_email);
+        userName = findViewById(R.id.user_name);
+        userEmail = findViewById(R.id.user_email);
         userName.setTypeface(CoCoinUtil.typefaceLatoRegular);
         userEmail.setTypeface(CoCoinUtil.typefaceLatoLight);
 
@@ -126,12 +126,7 @@ public class AccountBookTagViewActivity extends AppCompatActivity {
 
         View logo = findViewById(R.id.logo_white);
         if (logo != null) {
-            logo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mViewPager.notifyHeaderChanged();
-                }
-            });
+            logo.setOnClickListener(v -> mViewPager.notifyHeaderChanged());
         }
 
         tagModeAdapter = new TagViewFragmentAdapter(getSupportFragmentManager());
@@ -141,57 +136,41 @@ public class AccountBookTagViewActivity extends AppCompatActivity {
 
         mViewPager.clearAnimation();
         if (SettingManager.getInstance().getShowPicture()) {
-            mViewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
-                @Override
-                public HeaderDesign getHeaderDesign(int page) {
-                    return HeaderDesign.fromColorAndUrl(
-                            CoCoinUtil.GetTagColor(RecordManager.TAGS.get(page).getId()),
-                            CoCoinUtil.GetTagUrl(RecordManager.TAGS.get(page).getId()));
-                }
-            });
+            mViewPager.setMaterialViewPagerListener(page -> HeaderDesign.fromColorAndUrl(
+                    CoCoinUtil.GetTagColor(RecordManager.TAGS.get(page).getId()),
+                    CoCoinUtil.GetTagUrl(RecordManager.TAGS.get(page).getId())));
         } else {
-            mViewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
-                @Override
-                public HeaderDesign getHeaderDesign(int page) {
-                    return HeaderDesign.fromColorAndDrawable(
-                            CoCoinUtil.GetTagColor(RecordManager.TAGS.get(page).getId()),
-                            CoCoinUtil.GetTagDrawable(-3));
-                }
-            });
+            mViewPager.setMaterialViewPagerListener(page -> HeaderDesign.fromColorAndDrawable(
+                    CoCoinUtil.GetTagColor(RecordManager.TAGS.get(page).getId()),
+                    CoCoinUtil.GetTagDrawable(-3)));
         }
 
         myGridView = (MyGridView)mDrawer.findViewById(R.id.grid_view);
         drawerTagChooseAdapter = new DrawerTagChooseGridViewAdapter(mContext);
         myGridView.setAdapter(drawerTagChooseAdapter);
 
-        myGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                YoYo.with(Techniques.Bounce).delay(0).duration(700).playOn(view);
-                mViewPager.getViewPager().setCurrentItem(position);
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDrawer.closeDrawers();
-                    }
-                }, 700);
-            }
-        });
-
-        profileImage= (CircleImageView)mDrawer.findViewById(R.id.profile_image);
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (SettingManager.getInstance().getLoggenOn()) {
-                    CoCoinUtil.showToast(mContext, R.string.change_logo_tip);
-                } else {
-                    CoCoinUtil.showToast(mContext, R.string.login_tip);
+        myGridView.setOnItemClickListener((parent, view1, position, id) -> {
+            YoYo.with(Techniques.Bounce).delay(0).duration(700).playOn(view1);
+            mViewPager.getViewPager().setCurrentItem(position);
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mDrawer.closeDrawers();
                 }
+            }, 700);
+        });
+
+        profileImage= mDrawer.findViewById(R.id.profile_image);
+        profileImage.setOnClickListener(v -> {
+            if (SettingManager.getInstance().getLoggenOn()) {
+                CoCoinUtil.showToast(mContext, R.string.change_logo_tip);
+            } else {
+                CoCoinUtil.showToast(mContext, R.string.login_tip);
             }
         });
 
-        mDemoSlider = (SliderLayout)findViewById(R.id.slider);
+        mDemoSlider = findViewById(R.id.slider);
 
         HashMap<String, Integer> urls = CoCoinUtil.GetDrawerTopUrl();
 
@@ -206,7 +185,7 @@ public class AccountBookTagViewActivity extends AppCompatActivity {
         mDemoSlider.setPresetTransformer(SliderLayout.Transformer.ZoomOut);
         mDemoSlider.setCustomAnimation(new DescriptionAnimation());
         mDemoSlider.setDuration(4000);
-        mDemoSlider.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
+        mDemoSlider.setCustomIndicator(findViewById(R.id.custom_indicator));
 
         loadLogo();
 

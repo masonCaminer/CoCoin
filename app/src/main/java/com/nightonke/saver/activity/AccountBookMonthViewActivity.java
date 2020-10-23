@@ -80,8 +80,8 @@ public class AccountBookMonthViewActivity extends AppCompatActivity {
         mContext = this;
         setContentView(R.layout.activity_account_book_month_view);
 
-        userName = (TextView) findViewById(R.id.user_name);
-        userEmail = (TextView) findViewById(R.id.user_email);
+        userName = findViewById(R.id.user_name);
+        userEmail = findViewById(R.id.user_email);
         userName.setTypeface(CoCoinUtil.typefaceLatoRegular);
         userEmail.setTypeface(CoCoinUtil.typefaceLatoLight);
 
@@ -91,10 +91,10 @@ public class AccountBookMonthViewActivity extends AppCompatActivity {
             userEmail.setText(user.getEmail());
         }
 
-        mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
+        mViewPager = findViewById(R.id.materialViewPager);
 
         View view = mViewPager.getRootView();
-        TextView title = (TextView) view.findViewById(R.id.logo_white);
+        TextView title = view.findViewById(R.id.logo_white);
         title.setTypeface(CoCoinUtil.typefaceLatoLight);
         title.setText(SettingManager.getInstance().getAccountBookName());
 
@@ -103,7 +103,7 @@ public class AccountBookMonthViewActivity extends AppCompatActivity {
         setTitle("");
 
         toolbar = mViewPager.getToolbar();
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = findViewById(R.id.drawer_layout);
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -123,12 +123,7 @@ public class AccountBookMonthViewActivity extends AppCompatActivity {
 
         View logo = findViewById(R.id.logo_white);
         if (logo != null) {
-            logo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mViewPager.notifyHeaderChanged();
-                }
-            });
+            logo.setOnClickListener(v -> mViewPager.notifyHeaderChanged());
         }
 
         monthModeAdapter = new MonthViewFragmentAdapter(getSupportFragmentManager());
@@ -139,49 +134,33 @@ public class AccountBookMonthViewActivity extends AppCompatActivity {
             mViewPager.getPagerTitleStrip().setVisibility(View.INVISIBLE);
         }
 
-        mViewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
-            @Override
-            public HeaderDesign getHeaderDesign(int page) {
-                return HeaderDesign.fromColorAndDrawable(
-                        CoCoinUtil.GetTagColor(RecordManager.TAGS.get(page).getId()),
-                        CoCoinUtil.GetTagDrawable(-3)
-                );
-            }
-        });
+        mViewPager.setMaterialViewPagerListener(page -> HeaderDesign.fromColorAndDrawable(
+                CoCoinUtil.GetTagColor(RecordManager.TAGS.get(page).getId()),
+                CoCoinUtil.GetTagDrawable(-3)
+        ));
 
-        recyclerView = (RecyclerView) mDrawer.findViewById(R.id.recycler_view);
+        recyclerView = mDrawer.findViewById(R.id.recycler_view);
         drawerMonthViewRecyclerViewAdapter = new DrawerMonthViewRecyclerViewAdapter(mContext);
         recyclerView.setAdapter(drawerMonthViewRecyclerViewAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        drawerMonthViewRecyclerViewAdapter.SetOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                mViewPager.getViewPager().setCurrentItem(position);
-                final Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDrawer.closeDrawers();
-                    }
-                }, 700);
+        drawerMonthViewRecyclerViewAdapter.SetOnItemClickListener((view1, position) -> {
+            mViewPager.getViewPager().setCurrentItem(position);
+            final Handler handler = new Handler();
+            handler.postDelayed(() -> mDrawer.closeDrawers(), 700);
+        });
+
+        profileImage = mDrawer.findViewById(R.id.profile_image);
+        profileImage.setOnClickListener(v -> {
+            if (SettingManager.getInstance().getLoggenOn()) {
+                CoCoinUtil.showToast(mContext, R.string.change_logo_tip);
+            } else {
+                CoCoinUtil.showToast(mContext, R.string.login_tip);
             }
         });
 
-        profileImage = (CircleImageView) mDrawer.findViewById(R.id.profile_image);
-        profileImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (SettingManager.getInstance().getLoggenOn()) {
-                    CoCoinUtil.showToast(mContext, R.string.change_logo_tip);
-                } else {
-                    CoCoinUtil.showToast(mContext, R.string.login_tip);
-                }
-            }
-        });
-
-        mDemoSlider = (SliderLayout) findViewById(R.id.slider);
+        mDemoSlider = findViewById(R.id.slider);
 
         HashMap<String, Integer> urls = CoCoinUtil.GetDrawerTopUrl();
 
@@ -196,7 +175,7 @@ public class AccountBookMonthViewActivity extends AppCompatActivity {
         mDemoSlider.setPresetTransformer(SliderLayout.Transformer.ZoomOut);
         mDemoSlider.setCustomAnimation(new DescriptionAnimation());
         mDemoSlider.setDuration(4000);
-        mDemoSlider.setCustomIndicator((PagerIndicator) findViewById(R.id.custom_indicator));
+        mDemoSlider.setCustomIndicator(findViewById(R.id.custom_indicator));
 
         loadLogo();
 

@@ -129,12 +129,12 @@ public class SetPasswordActivity extends AppCompatActivity {
                     }
                 });
 
-        back = (MaterialIconView)findViewById(R.id.back);
+        back = findViewById(R.id.back);
         back.setVisibility(View.INVISIBLE);
 
         superToast = new SuperToast(this);
 
-        title = (TextView)findViewById(R.id.title);
+        title = findViewById(R.id.title);
         title.setTypeface(CoCoinUtil.typefaceLatoLight);
         if (SettingManager.getInstance().getFirstTime()) {
             title.setText(mContext.getResources().getString(R.string.app_name));
@@ -164,13 +164,10 @@ public class SetPasswordActivity extends AppCompatActivity {
     };
 
     private final AdapterView.OnItemLongClickListener gridViewLongClickListener
-            = new AdapterView.OnItemLongClickListener() {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            buttonClickOperation(true, position);
-            return true;
-        }
-    };
+            = (parent, view, position, id) -> {
+                buttonClickOperation(true, position);
+                return true;
+            };
 
     private void buttonClickOperation(boolean longClick, int position) {
         switch (CURRENT_STATE) {

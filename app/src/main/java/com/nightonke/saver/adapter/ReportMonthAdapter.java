@@ -17,8 +17,8 @@ import java.util.Random;
  */
 public class ReportMonthAdapter extends BaseAdapter {
 
-    private ArrayList<double[]> highestMonthExpense;
-    private int year;
+    private final ArrayList<double[]> highestMonthExpense;
+    private final int year;
 
     public ReportMonthAdapter(ArrayList<double[]> highestMonthExpense, int year) {
         this.highestMonthExpense = highestMonthExpense;
@@ -67,7 +67,6 @@ public class ReportMonthAdapter extends BaseAdapter {
     private int getBackgroundResource() {
         Random random = new Random();
         switch (random.nextInt(6)) {
-            case 0: return R.drawable.bg_month_icon_small_0;
             case 1: return R.drawable.bg_month_icon_small_1;
             case 2: return R.drawable.bg_month_icon_small_2;
             case 3: return R.drawable.bg_month_icon_small_3;

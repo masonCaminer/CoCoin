@@ -173,10 +173,10 @@ public class EditRecordActivity extends AppCompatActivity
         super.finish();
     }
 
-    private AdapterView.OnItemClickListener gridViewClickListener
+    private final AdapterView.OnItemClickListener gridViewClickListener
             = (parent, view, position, id) -> buttonClickOperation(false, position);
 
-    private AdapterView.OnItemLongClickListener gridViewLongClickListener
+    private final AdapterView.OnItemLongClickListener gridViewLongClickListener
             = (parent, view, position, id) -> {
                 buttonClickOperation(true, position);
                 return true;

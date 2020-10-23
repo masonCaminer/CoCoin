@@ -49,10 +49,6 @@ public class RecordManager {
     public static Map<Integer, String> TAG_NAMES;
 
     public static boolean RANDOM_DATA = false;
-    private final int RANDOM_DATA_NUMBER_ON_EACH_DAY = 3;
-    private final int RANDOM_DATA_EXPENSE_ON_EACH_DAY = 30;
-
-    private static boolean FIRST_TIME = true;
 
     public static int SAVE_TAG_ERROR_DATABASE_ERROR = -1;
     public static int SAVE_TAG_ERROR_DUPLICATED_NAME = -2;
@@ -60,15 +56,16 @@ public class RecordManager {
     public static int DELETE_TAG_ERROR_DATABASE_ERROR = -1;
     public static int DELETE_TAG_ERROR_TAG_REFERENCE = -2;
 
-// constructor//////////////////////////////////////////////////////////////////////////////////////
+    // constructor//////////////////////////////////////////////////////////////////////////////////////
     private RecordManager(Context context) {
         try {
-            db = db.getInstance(context);
-            if (BuildConfig.DEBUG) if (BuildConfig.DEBUG) Log.d("CoCoin", "db.getInstance(context) S");
-        } catch(IOException e) {
+            db = DB.getInstance(context);
+            if (BuildConfig.DEBUG) Log.d("CoCoin", "db.getInstance(context) S");
+        } catch (IOException e) {
             e.printStackTrace();
         }
-        if (FIRST_TIME) {
+        boolean FIRST_TIME = true;
+        {
 // if the app starts firstly, create tags///////////////////////////////////////////////////////////
             SharedPreferences preferences =
                     context.getSharedPreferences("Values", Context.MODE_PRIVATE);
@@ -77,7 +74,7 @@ public class RecordManager {
                 SharedPreferences.Editor editor =
                         context.getSharedPreferences("Values", Context.MODE_PRIVATE).edit();
                 editor.putBoolean("FIRST_TIME", false);
-                editor.commit();
+                editor.apply();
             }
         }
         if (RANDOM_DATA) {
@@ -93,12 +90,12 @@ public class RecordManager {
             SharedPreferences.Editor editor =
                     context.getSharedPreferences("Values", Context.MODE_PRIVATE).edit();
             editor.putBoolean("RANDOM", true);
-            editor.commit();
+            editor.apply();
 
         }
     }
 
-// getInstance//////////////////////////////////////////////////////////////////////////////////////
+    // getInstance//////////////////////////////////////////////////////////////////////////////////////
     public synchronized static RecordManager getInstance(Context context) {
         if (RECORDS == null || TAGS == null || TAG_NAMES == null || SUM == null || recordManager == null) {
             SUM = 0;
@@ -110,8 +107,8 @@ public class RecordManager {
             db.getData();
 
             if (BuildConfig.DEBUG) {
-                if (BuildConfig.DEBUG) Log.d("CoCoin", "Load " + RECORDS.size() + " records S");
-                if (BuildConfig.DEBUG) Log.d("CoCoin", "Load " + TAGS.size() + " tags S");
+                Log.d("CoCoin", "Load " + RECORDS.size() + " records S");
+                Log.d("CoCoin", "Load " + TAGS.size() + " tags S");
             }
 
             TAGS.add(0, new Tag(-1, "Sum Histogram", -4));
@@ -124,25 +121,25 @@ public class RecordManager {
         return recordManager;
     }
 
-// saveRecord///////////////////////////////////////////////////////////////////////////////////////
+    // saveRecord///////////////////////////////////////////////////////////////////////////////////////
     public static long saveRecord(final CoCoinRecord coCoinRecord) {
-        long insertId = -1;
+        long insertId;
         // this is a new coCoinRecord, which is not uploaded
         coCoinRecord.setIsUploaded(false);
 //        User user = BmobUser.getCurrentUser(CoCoinApplication.getAppContext(), User.class);
 //        if (user != null) coCoinRecord.setUserId(user.getObjectId());
 //        else coCoinRecord.setUserId(null);
         if (BuildConfig.DEBUG)
-            if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.saveRecord: Save " + coCoinRecord.toString() + " S");
+            Log.d("CoCoin", "recordManager.saveRecord: Save " + coCoinRecord.toString() + " S");
         insertId = db.saveRecord(coCoinRecord);
         if (insertId == -1) {
             if (BuildConfig.DEBUG)
-                if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.saveRecord: Save the above coCoinRecord FAIL!");
+                Log.d("CoCoin", "recordManager.saveRecord: Save the above coCoinRecord FAIL!");
             CoCoinToast.getInstance()
                     .showToast(R.string.save_failed_locale, SuperToast.Background.RED);
         } else {
             if (BuildConfig.DEBUG)
-                if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.saveRecord: Save the above coCoinRecord SUCCESSFULLY!");
+                Log.d("CoCoin", "recordManager.saveRecord: Save the above coCoinRecord SUCCESSFULLY!");
             RECORDS.add(coCoinRecord);
             SUM += (int) coCoinRecord.getMoney();
 //            if (user != null) {
@@ -178,11 +175,11 @@ public class RecordManager {
         return insertId;
     }
 
-// save tag/////////////////////////////////////////////////////////////////////////////////////////
+    // save tag/////////////////////////////////////////////////////////////////////////////////////////
     public static int saveTag(Tag tag) {
-        int insertId = -1;
+        int insertId;
         if (BuildConfig.DEBUG) {
-            if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.saveTag: " + tag.toString());
+            Log.d("CoCoin", "recordManager.saveTag: " + tag.toString());
         }
         boolean duplicatedName = false;
         for (Tag t : TAGS) {
@@ -197,12 +194,12 @@ public class RecordManager {
         insertId = db.saveTag(tag);
         if (insertId == -1) {
             if (BuildConfig.DEBUG) {
-                if (BuildConfig.DEBUG) Log.d("CoCoin", "Save the above tag FAIL!");
+                Log.d("CoCoin", "Save the above tag FAIL!");
                 return SAVE_TAG_ERROR_DATABASE_ERROR;
             }
         } else {
             if (BuildConfig.DEBUG) {
-                if (BuildConfig.DEBUG) Log.d("CoCoin", "Save the above tag SUCCESSFULLY!");
+                Log.d("CoCoin", "Save the above tag SUCCESSFULLY!");
             }
             TAGS.add(tag);
             TAG_NAMES.put(tag.getId(), tag.getName());
@@ -211,7 +208,7 @@ public class RecordManager {
         return insertId;
     }
 
-// delete a coCoinRecord//////////////////////////////////////////////////////////////////////////////////
+    // delete a coCoinRecord//////////////////////////////////////////////////////////////////////////////////
     public static long deleteRecord(final CoCoinRecord coCoinRecord, boolean deleteInList) {
         long deletedNumber = db.deleteRecord(coCoinRecord.getId());
         if (deletedNumber > 0) {
@@ -303,21 +300,22 @@ public class RecordManager {
     }
 
     private static int p;
+
     public static long updateRecord(final CoCoinRecord coCoinRecord) {
         long updateNumber = db.updateRecord(coCoinRecord);
         if (updateNumber <= 0) {
             if (BuildConfig.DEBUG) {
-                if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.updateRecord " + coCoinRecord.toString() + " F");
+                Log.d("CoCoin", "recordManager.updateRecord " + coCoinRecord.toString() + " F");
             }
             CoCoinToast.getInstance().showToast(R.string.update_failed_locale, SuperToast.Background.RED);
         } else {
             if (BuildConfig.DEBUG) {
-                if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.updateRecord " + coCoinRecord.toString() + " S");
+                Log.d("CoCoin", "recordManager.updateRecord " + coCoinRecord.toString() + " S");
             }
             p = RECORDS.size() - 1;
             for (; p >= 0; p--) {
                 if (RECORDS.get(p).getId() == coCoinRecord.getId()) {
-                    SUM -= (int)RECORDS.get(p).getMoney();
+                    SUM -= (int) RECORDS.get(p).getMoney();
                     SUM += (int) coCoinRecord.getMoney();
                     RECORDS.get(p).set(coCoinRecord);
                     break;
@@ -394,8 +392,9 @@ public class RecordManager {
         return updateNumber;
     }
 
-// update the records changed to server/////////////////////////////////////////////////////////////
+    // update the records changed to server/////////////////////////////////////////////////////////////
     private static boolean isLastOne = false;
+
     public static long updateOldRecordsToServer() {
         long counter = 0;
         User user = BmobUser
@@ -416,7 +415,7 @@ public class RecordManager {
                                     @Override
                                     public void onSuccess() {
                                         if (BuildConfig.DEBUG) {
-                                            if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.updateOldRecordsToServer update online " + coCoinRecord.toString() + " S");
+                                            Log.d("CoCoin", "recordManager.updateOldRecordsToServer update online " + coCoinRecord.toString() + " S");
                                         }
                                         coCoinRecord.setIsUploaded(true);
                                         coCoinRecord.setLocalObjectId(coCoinRecord.getObjectId());
@@ -428,10 +427,10 @@ public class RecordManager {
                                     @Override
                                     public void onFailure(int code, String msg) {
                                         if (BuildConfig.DEBUG) {
-                                            if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.updateOldRecordsToServer update online " + coCoinRecord.toString() + " F");
+                                            Log.d("CoCoin", "recordManager.updateOldRecordsToServer update online " + coCoinRecord.toString() + " F");
                                         }
                                         if (BuildConfig.DEBUG) {
-                                            if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.updateOldRecordsToServer update online code" + code + " msg " + msg );
+                                            Log.d("CoCoin", "recordManager.updateOldRecordsToServer update online code" + code + " msg " + msg);
                                         }
                                     }
                                 });
@@ -442,7 +441,7 @@ public class RecordManager {
                             @Override
                             public void onSuccess() {
                                 if (BuildConfig.DEBUG) {
-                                    if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.updateOldRecordsToServer save online " + coCoinRecord.toString() + " S");
+                                    Log.d("CoCoin", "recordManager.updateOldRecordsToServer save online " + coCoinRecord.toString() + " S");
                                 }
                                 coCoinRecord.setIsUploaded(true);
                                 coCoinRecord.setLocalObjectId(coCoinRecord.getObjectId());
@@ -454,10 +453,10 @@ public class RecordManager {
                             @Override
                             public void onFailure(int code, String msg) {
                                 if (BuildConfig.DEBUG) {
-                                    if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.updateOldRecordsToServer save online " + coCoinRecord.toString() + " F");
+                                    Log.d("CoCoin", "recordManager.updateOldRecordsToServer save online " + coCoinRecord.toString() + " F");
                                 }
                                 if (BuildConfig.DEBUG) {
-                                    if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.updateOldRecordsToServer save online code" + code + " msg " + msg );
+                                    Log.d("CoCoin", "recordManager.updateOldRecordsToServer save online code" + code + " msg " + msg);
                                 }
                             }
                         });
@@ -469,7 +468,7 @@ public class RecordManager {
         }
 
         if (BuildConfig.DEBUG) {
-            if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.updateOldRecordsToServer update " + counter + " records to server.");
+            Log.d("CoCoin", "recordManager.updateOldRecordsToServer update " + counter + " records to server.");
         }
 
         if (RECORDS.size() == 0) getRecordsFromServer();
@@ -478,7 +477,7 @@ public class RecordManager {
     }
 
     public static long updateTag(Tag tag) {
-        int updateId = -1;
+        int updateId;
         if (BuildConfig.DEBUG) Log.d("CoCoin",
                 "Manager: Update tag: " + tag.toString());
         updateId = db.updateTag(tag);
@@ -497,11 +496,12 @@ public class RecordManager {
         return updateId;
     }
 
-//get records from server to local//////////////////////////////////////////////////////////////////
+    //get records from server to local//////////////////////////////////////////////////////////////////
     private static long updateNum;
+
     public static long getRecordsFromServer() {
         updateNum = 0;
-        BmobQuery<CoCoinRecord> query = new BmobQuery<CoCoinRecord>();
+        BmobQuery<CoCoinRecord> query = new BmobQuery<>();
         query.addWhereEqualTo("userId",
                 BmobUser.getCurrentUser(CoCoinApplication.getAppContext(), User.class).getObjectId());
         query.setLimit(Integer.MAX_VALUE);
@@ -509,7 +509,7 @@ public class RecordManager {
             @Override
             public void onSuccess(List<CoCoinRecord> object) {
                 if (BuildConfig.DEBUG) {
-                    if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.getRecordsFromServer get " + object.size() + " records from server");
+                    Log.d("CoCoin", "recordManager.getRecordsFromServer get " + object.size() + " records from server");
                 }
                 updateNum = object.size();
                 for (CoCoinRecord coCoinRecord : object) {
@@ -528,37 +528,35 @@ public class RecordManager {
                     }
                 }
 
-                Collections.sort(RECORDS, new Comparator<CoCoinRecord>() {
-                    @Override
-                    public int compare(CoCoinRecord lhs, CoCoinRecord rhs) {
-                        if (lhs.getCalendar().before(rhs.getCalendar())) {
-                            return -1;
-                        } else if (lhs.getCalendar().after(rhs.getCalendar())) {
-                            return 1;
-                        } else {
-                            return 0;
-                        }
+                Collections.sort(RECORDS, (lhs, rhs) -> {
+                    if (lhs.getCalendar().before(rhs.getCalendar())) {
+                        return -1;
+                    } else if (lhs.getCalendar().after(rhs.getCalendar())) {
+                        return 1;
+                    } else {
+                        return 0;
                     }
                 });
 
                 db.deleteAllRecords();
 
                 SUM = 0;
-                for (int i = 0; i < RECORDS.size(); i++) {
-                    RECORDS.get(i).setLocalObjectId(RECORDS.get(i).getObjectId());
-                    RECORDS.get(i).setIsUploaded(true);
-                    db.saveRecord(RECORDS.get(i));
-                    SUM += (int)RECORDS.get(i).getMoney();
+                for (CoCoinRecord record : RECORDS) {
+                    record.setLocalObjectId(record.getObjectId());
+                    record.setIsUploaded(true);
+                    db.saveRecord(record);
+                    SUM += (int) record.getMoney();
                 }
 
                 if (BuildConfig.DEBUG) {
-                    if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.getRecordsFromServer save " + RECORDS.size() + " records");
+                    Log.d("CoCoin", "recordManager.getRecordsFromServer save " + RECORDS.size() + " records");
                 }
             }
+
             @Override
             public void onError(int code, String msg) {
                 if (BuildConfig.DEBUG) {
-                    if (BuildConfig.DEBUG) Log.d("CoCoin", "recordManager.getRecordsFromServer error " + msg);
+                    Log.d("CoCoin", "recordManager.getRecordsFromServer error " + msg);
                 }
             }
         });
@@ -628,36 +626,36 @@ public class RecordManager {
     }
 
     private void createTags() {
-        saveTag(new Tag(-1, "Meal",                -1));
+        saveTag(new Tag(-1, "Meal", -1));
         saveTag(new Tag(-1, "Clothing & Footwear", 1));
-        saveTag(new Tag(-1, "Home",                2));
-        saveTag(new Tag(-1, "Traffic",             3));
+        saveTag(new Tag(-1, "Home", 2));
+        saveTag(new Tag(-1, "Traffic", 3));
         saveTag(new Tag(-1, "Vehicle Maintenance", 4));
-        saveTag(new Tag(-1, "Book",                5));
-        saveTag(new Tag(-1, "Hobby",               6));
-        saveTag(new Tag(-1, "Internet",            7));
-        saveTag(new Tag(-1, "Friend",              8));
-        saveTag(new Tag(-1, "Education",           9));
-        saveTag(new Tag(-1, "Entertainment",      10));
-        saveTag(new Tag(-1, "Medical",            11));
-        saveTag(new Tag(-1, "Insurance",          12));
-        saveTag(new Tag(-1, "Donation",           13));
-        saveTag(new Tag(-1, "Sport",              14));
-        saveTag(new Tag(-1, "Snack",              15));
-        saveTag(new Tag(-1, "Music",              16));
-        saveTag(new Tag(-1, "Fund",               17));
-        saveTag(new Tag(-1, "Drink",              18));
-        saveTag(new Tag(-1, "Fruit",              19));
-        saveTag(new Tag(-1, "Film",               20));
-        saveTag(new Tag(-1, "Baby",               21));
-        saveTag(new Tag(-1, "Partner",            22));
-        saveTag(new Tag(-1, "Housing Loan",       23));
-        saveTag(new Tag(-1, "Pet",                24));
-        saveTag(new Tag(-1, "Telephone Bill",     25));
-        saveTag(new Tag(-1, "Travel",             26));
-        saveTag(new Tag(-1, "Lunch",              -2));
-        saveTag(new Tag(-1, "Breakfast",          -3));
-        saveTag(new Tag(-1, "MidnightSnack",      0));
+        saveTag(new Tag(-1, "Book", 5));
+        saveTag(new Tag(-1, "Hobby", 6));
+        saveTag(new Tag(-1, "Internet", 7));
+        saveTag(new Tag(-1, "Friend", 8));
+        saveTag(new Tag(-1, "Education", 9));
+        saveTag(new Tag(-1, "Entertainment", 10));
+        saveTag(new Tag(-1, "Medical", 11));
+        saveTag(new Tag(-1, "Insurance", 12));
+        saveTag(new Tag(-1, "Donation", 13));
+        saveTag(new Tag(-1, "Sport", 14));
+        saveTag(new Tag(-1, "Snack", 15));
+        saveTag(new Tag(-1, "Music", 16));
+        saveTag(new Tag(-1, "Fund", 17));
+        saveTag(new Tag(-1, "Drink", 18));
+        saveTag(new Tag(-1, "Fruit", 19));
+        saveTag(new Tag(-1, "Film", 20));
+        saveTag(new Tag(-1, "Baby", 21));
+        saveTag(new Tag(-1, "Partner", 22));
+        saveTag(new Tag(-1, "Housing Loan", 23));
+        saveTag(new Tag(-1, "Pet", 24));
+        saveTag(new Tag(-1, "Telephone Bill", 25));
+        saveTag(new Tag(-1, "Travel", 26));
+        saveTag(new Tag(-1, "Lunch", -2));
+        saveTag(new Tag(-1, "Breakfast", -3));
+        saveTag(new Tag(-1, "MidnightSnack", 0));
         sortTAGS();
     }
 
@@ -673,8 +671,9 @@ public class RecordManager {
         c.add(Calendar.SECOND, 1);
 
         while (c.before(now)) {
+            int RANDOM_DATA_NUMBER_ON_EACH_DAY = 3;
             for (int i = 0; i < RANDOM_DATA_NUMBER_ON_EACH_DAY; i++) {
-                Calendar r = (Calendar)c.clone();
+                Calendar r = (Calendar) c.clone();
                 int hour = random.nextInt(24);
                 int minute = random.nextInt(60);
                 int second = random.nextInt(60);
@@ -685,6 +684,7 @@ public class RecordManager {
                 r.add(Calendar.SECOND, 0);
 
                 int tag = random.nextInt(TAGS.size());
+                int RANDOM_DATA_EXPENSE_ON_EACH_DAY = 30;
                 int expense = random.nextInt(RANDOM_DATA_EXPENSE_ON_EACH_DAY) + 1;
 
                 CoCoinRecord coCoinRecord = new CoCoinRecord();
@@ -719,16 +719,13 @@ public class RecordManager {
 
     // Todo bug here
     private static void sortTAGS() {
-        Collections.sort(TAGS, new Comparator<Tag>() {
-            @Override
-            public int compare(Tag lhs, Tag rhs) {
-                if (lhs.getWeight() != rhs.getWeight()) {
-                    return Integer.valueOf(lhs.getWeight()).compareTo(rhs.getWeight());
-                } else if (!lhs.getName().equals(rhs.getName())) {
-                    return lhs.getName().compareTo(rhs.getName());
-                } else {
-                    return Integer.valueOf(lhs.getId()).compareTo(rhs.getId());
-                }
+        Collections.sort(TAGS, (lhs, rhs) -> {
+            if (lhs.getWeight() != rhs.getWeight()) {
+                return Integer.compare(lhs.getWeight(), rhs.getWeight());
+            } else if (!lhs.getName().equals(rhs.getName())) {
+                return lhs.getName().compareTo(rhs.getName());
+            } else {
+                return Integer.compare(lhs.getId(), rhs.getId());
             }
         });
     }

@@ -54,8 +54,8 @@ public class TagChooseGridViewAdapter extends BaseAdapter {
         if (convertView == null) {
             holder = new ViewHolder();
             convertView = this.inflater.inflate(R.layout.item_tag_choose, null);
-            holder.tagName = (TextView)convertView.findViewById(R.id.tag_name);
-            holder.tagImage = (ImageView)convertView.findViewById(R.id.tag_image);
+            holder.tagName = convertView.findViewById(R.id.tag_name);
+            holder.tagImage = convertView.findViewById(R.id.tag_image);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -71,7 +71,7 @@ public class TagChooseGridViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private class ViewHolder {
+    private static class ViewHolder {
         TextView tagName;
         ImageView tagImage;
     }

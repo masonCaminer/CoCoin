@@ -37,7 +37,7 @@ public class RecordExpandableSwipeableItemAdapter
         implements ExpandableSwipeableItemAdapter<RecordExpandableSwipeableItemAdapter.MyGroupViewHolder,
                 RecordExpandableSwipeableItemAdapter.MyChildViewHolder> {
 
-    private ArrayList<ArrayList<Integer>> list;
+    private final ArrayList<ArrayList<Integer>> list;
 
     // NOTE: Make accessible with short name
     private interface Expandable extends ExpandableItemConstants {
@@ -48,8 +48,8 @@ public class RecordExpandableSwipeableItemAdapter
 
     private final RecyclerViewExpandableItemManager mExpandableItemManager;
     private EventListener mEventListener;
-    private View.OnClickListener mItemViewOnClickListener;
-    private View.OnClickListener mSwipeableViewContainerOnClickListener;
+    private final View.OnClickListener mItemViewOnClickListener;
+    private final View.OnClickListener mSwipeableViewContainerOnClickListener;
 
     public interface EventListener {
         void onGroupItemRemoved(int groupPosition);
@@ -72,9 +72,9 @@ public class RecordExpandableSwipeableItemAdapter
 
         public MyBaseViewHolder(View v) {
             super(v);
-            mContainer = (FrameLayout) v.findViewById(R.id.container);
+            mContainer = v.findViewById(R.id.container);
             mDragHandle = v.findViewById(R.id.drag_handle);
-            mTextView = (TextView) v.findViewById(android.R.id.text1);
+            mTextView = v.findViewById(android.R.id.text1);
         }
 
         @Override
@@ -98,7 +98,7 @@ public class RecordExpandableSwipeableItemAdapter
 
         public MyGroupViewHolder(View v) {
             super(v);
-            mIndicator = (ExpandableItemIndicator) v.findViewById(R.id.indicator);
+            mIndicator = v.findViewById(R.id.indicator);
         }
     }
 
@@ -113,18 +113,8 @@ public class RecordExpandableSwipeableItemAdapter
             ArrayList<ArrayList<Integer>> inList) {
         list = inList;
         mExpandableItemManager = expandableItemManager;
-        mItemViewOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemViewClick(v);
-            }
-        };
-        mSwipeableViewContainerOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onSwipeableViewContainerClick(v);
-            }
-        };
+        mItemViewOnClickListener = v -> onItemViewClick(v);
+        mSwipeableViewContainerOnClickListener = v -> onSwipeableViewContainerClick(v);
 
         // ExpandableItemAdapter, ExpandableDraggableItemAdapter and ExpandableSwipeableItemAdapter
         // require stable ID, and also have to implement the getGroupItemId()/getChildItemId() methods appropriately.
@@ -210,11 +200,7 @@ public class RecordExpandableSwipeableItemAdapter
             boolean animateIndicator
                     = ((expandState & Expandable.STATE_FLAG_HAS_EXPANDED_STATE_CHANGED) != 0);
 
-            if ((expandState & Expandable.STATE_FLAG_IS_EXPANDED) != 0) {
-                isExpanded = true;
-            } else {
-                isExpanded = false;
-            }
+            isExpanded = (expandState & Expandable.STATE_FLAG_IS_EXPANDED) != 0;
 
 //            holder.mContainer.setBackgroundResource(bgResId);
             holder.mIndicator.setExpandedState(isExpanded, animateIndicator);

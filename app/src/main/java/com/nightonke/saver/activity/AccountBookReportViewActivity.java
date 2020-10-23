@@ -27,10 +27,6 @@ public class AccountBookReportViewActivity extends AppCompatActivity
 
     private MaterialViewPager mViewPager;
 
-    private Toolbar toolbar;
-
-    private ReportViewFragmentAdapter reportViewFragmentAdapter = null;
-
     private Context mContext;
 
     @Override
@@ -40,10 +36,10 @@ public class AccountBookReportViewActivity extends AppCompatActivity
         mContext = this;
         setContentView(R.layout.activity_account_book_report_view);
 
-        mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
+        mViewPager = findViewById(R.id.materialViewPager);
 
         View view = mViewPager.getRootView();
-        TextView title = (TextView)view.findViewById(R.id.logo_white);
+        TextView title = view.findViewById(R.id.logo_white);
         title.setTypeface(CoCoinUtil.typefaceLatoLight);
         title.setText(SettingManager.getInstance().getAccountBookName());
 
@@ -54,17 +50,14 @@ public class AccountBookReportViewActivity extends AppCompatActivity
         mViewPager.getPagerTitleStrip().setUnderlineHeight(0);
         mViewPager.getPagerTitleStrip().setIndicatorHeight(0);
 
-        mViewPager.getPagerTitleStrip().setOnTabReselectedListener(new PagerSlidingTabStrip.OnTabReselectedListener() {
-            @Override
-            public void onTabReselected(int position) {
+        mViewPager.getPagerTitleStrip().setOnTabReselectedListener(position -> {
 //                if (CoCoinFragmentManager.reportViewFragment != null)
 //                    CoCoinFragmentManager.reportViewFragment.showDataDialog();
-            }
         });
 
         setTitle("");
 
-        toolbar = mViewPager.getToolbar();
+        Toolbar toolbar = mViewPager.getToolbar();
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
@@ -81,30 +74,20 @@ public class AccountBookReportViewActivity extends AppCompatActivity
 
         View logo = findViewById(R.id.logo_white);
         if (logo != null) {
-            logo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mViewPager.notifyHeaderChanged();
-                }
-            });
+            logo.setOnClickListener(v -> mViewPager.notifyHeaderChanged());
         }
 
-        reportViewFragmentAdapter = new ReportViewFragmentAdapter(getSupportFragmentManager());
+        ReportViewFragmentAdapter reportViewFragmentAdapter = new ReportViewFragmentAdapter(getSupportFragmentManager());
         mViewPager.getViewPager().setOffscreenPageLimit(1);
         mViewPager.getViewPager().setAdapter(reportViewFragmentAdapter);
         mViewPager.getPagerTitleStrip().setViewPager(mViewPager.getViewPager());
 
         mViewPager.getPagerTitleStrip().invalidate();
 
-        mViewPager.setMaterialViewPagerListener(new MaterialViewPager.Listener() {
-            @Override
-            public HeaderDesign getHeaderDesign(int page) {
-                return HeaderDesign.fromColorAndDrawable(
-                        CoCoinUtil.GetTagColor(-3),
-                        CoCoinUtil.GetTagDrawable(-3)
-                );
-            }
-        });
+        mViewPager.setMaterialViewPagerListener(page -> HeaderDesign.fromColorAndDrawable(
+                CoCoinUtil.GetTagColor(-3),
+                CoCoinUtil.GetTagDrawable(-3)
+        ));
 
     }
 

@@ -1,5 +1,6 @@
 package com.nightonke.saver.adapter;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -13,12 +14,13 @@ import com.nightonke.saver.util.CoCoinUtil;
 
 public class TodayViewFragmentAdapter extends FragmentStatePagerAdapter {
 
-    private static int TODAY_VIEW_FRAGMENT_NUMBER = 8;
+    private static final int TODAY_VIEW_FRAGMENT_NUMBER = 8;
 
     public TodayViewFragmentAdapter(FragmentManager fm) {
         super(fm);
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int i) {
         return TodayViewFragment.newInstance(i);
@@ -35,7 +37,7 @@ public class TodayViewFragmentAdapter extends FragmentStatePagerAdapter {
     }
 
     @Override
-    public int getItemPosition(Object object) {
+    public int getItemPosition(@NonNull Object object) {
         return POSITION_NONE;
     }
 }

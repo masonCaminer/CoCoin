@@ -171,8 +171,8 @@ public class AccountBookListViewActivity extends AppCompatActivity
 
         mContext = this;
 
-        userName = (TextView) findViewById(R.id.user_name);
-        userEmail = (TextView) findViewById(R.id.user_email);
+        userName = findViewById(R.id.user_name);
+        userEmail = findViewById(R.id.user_email);
         userName.setTypeface(CoCoinUtil.typefaceLatoRegular);
         userEmail.setTypeface(CoCoinUtil.typefaceLatoLight);
 

@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import com.nightonke.saver.R;
 import com.nightonke.saver.activity.CoCoinApplication;
 import com.nightonke.saver.model.RecordManager;
@@ -87,6 +88,7 @@ public class DrawerMonthViewRecyclerViewAdapter
         return expenses.size();
     }
 
+    @NonNull
     @Override
     public DrawerMonthViewRecyclerViewAdapter.viewHolder
     onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -118,7 +120,7 @@ public class DrawerMonthViewRecyclerViewAdapter
     }
 
     public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
+        void onItemClick(View view, int position);
     }
 
     public class viewHolder extends RecyclerView.ViewHolder

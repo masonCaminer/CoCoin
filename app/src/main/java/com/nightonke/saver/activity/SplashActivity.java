@@ -55,7 +55,7 @@ public class SplashActivity extends Activity {
 
         mContext = this;
 
-        chart = (LineChartView) findViewById(R.id.chart);
+        chart = findViewById(R.id.chart);
         List<Line> lines = new ArrayList<Line>();
         for (int i = 0; i < NUMBER_OF_LINES; ++i) {
 
@@ -82,14 +82,14 @@ public class SplashActivity extends Activity {
         data.setBaseValue(Float.NEGATIVE_INFINITY);
         chart.setLineChartData(data);
 
-        image = (ImageView) findViewById(R.id.image);
-        appName = (TextView) findViewById(R.id.app_name);
+        image = findViewById(R.id.image);
+        appName = findViewById(R.id.app_name);
         appName.setTypeface(CoCoinUtil.getInstance().typefaceLatoLight);
-        loadingText = (TextView) findViewById(R.id.loading_text);
+        loadingText = findViewById(R.id.loading_text);
         loadingText.setTypeface(CoCoinUtil.getInstance().typefaceLatoLight);
 
-        reveal = (RevealFrameLayout) findViewById(R.id.reveal);
-        ly = (LinearLayout) findViewById(R.id.ly);
+        reveal = findViewById(R.id.reveal);
+        ly = findViewById(R.id.ly);
 
         new InitData().execute();
     }

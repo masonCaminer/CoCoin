@@ -1,5 +1,6 @@
 package com.nightonke.saver.adapter;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -55,6 +56,7 @@ public class MonthViewFragmentAdapter extends FragmentStatePagerAdapter {
         }
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int i) {
         if (IS_EMPTY) return MonthViewFragment.newInstance(0, -1);

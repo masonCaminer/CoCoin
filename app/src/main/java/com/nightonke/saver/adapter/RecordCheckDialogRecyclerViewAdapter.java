@@ -65,12 +65,7 @@ public class RecordCheckDialogRecyclerViewAdapter extends RecyclerView.Adapter<R
         holder.remark.setText(coCoinRecords.get(position).getRemark());
         holder.remark.setTypeface(CoCoinUtil.typefaceLatoLight);
 
-        holder.layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClickListener.onItemClick(v, position);
-            }
-        });
+        holder.layout.setOnClickListener(v -> onItemClickListener.onItemClick(v, position));
     }
 
     @Override
@@ -85,7 +80,7 @@ public class RecordCheckDialogRecyclerViewAdapter extends RecyclerView.Adapter<R
         void onItemClick(View view, int position);
     }
 
-    public class viewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class viewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.image_view)
         ImageView imageView;

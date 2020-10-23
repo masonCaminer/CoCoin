@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.SwipeableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAction;
@@ -82,6 +83,7 @@ public class MySwipeableItemAdapter
         return 0;
     }
 
+    @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -241,12 +243,12 @@ public class MySwipeableItemAdapter
 
         public MyViewHolder(View v) {
             super(v);
-            mContainer = (FrameLayout) v.findViewById(R.id.container);
-            money = (TextView) v.findViewById(R.id.money);
-            remark = (TextView) v.findViewById(R.id.remark);
-            date = (TextView) v.findViewById(R.id.date);
-            tagImage = (ImageView) v.findViewById(R.id.image_view);
-            index = (TextView) v.findViewById(R.id.index);
+            mContainer = v.findViewById(R.id.container);
+            money = v.findViewById(R.id.money);
+            remark = v.findViewById(R.id.remark);
+            date = v.findViewById(R.id.date);
+            tagImage = v.findViewById(R.id.image_view);
+            index = v.findViewById(R.id.index);
         }
 
         @Override

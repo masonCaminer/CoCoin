@@ -121,9 +121,9 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
 
         mContext = this;
 
-        mViewPager = (MaterialViewPager) findViewById(R.id.materialViewPager);
-        userName = (TextView)findViewById(R.id.user_name);
-        userEmail = (TextView)findViewById(R.id.user_email);
+        mViewPager = findViewById(R.id.materialViewPager);
+        userName = findViewById(R.id.user_name);
+        userEmail = findViewById(R.id.user_email);
         userName.setTypeface(CoCoinUtil.typefaceLatoRegular);
         userEmail.setTypeface(CoCoinUtil.typefaceLatoLight);
         User user = BmobUser.getCurrentUser(CoCoinApplication.getAppContext(), User.class);
@@ -135,7 +135,7 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
         setFonts();
 
         View view = mViewPager.getRootView();
-        title = (TextView)view.findViewById(R.id.logo_white);
+        title = view.findViewById(R.id.logo_white);
         title.setTypeface(CoCoinUtil.typefaceLatoLight);
         title.setText(SettingManager.getInstance().getAccountBookName());
 
@@ -846,66 +846,16 @@ public class AccountBookTodayViewActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
-        custom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadRangeMode();
-            }
-        });
-        tags.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadTagMode();
-            }
-        });
-        months.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadMonthMode();
-            }
-        });
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadSettings();
-            }
-        });
-        list.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadListMode();
-            }
-        });
-        report.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(mContext, AccountBookReportViewActivity.class));
-            }
-        });
-        sync.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sync();
-            }
-        });
-        help.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(mContext, HelpActivity.class));
-            }
-        });
-        feedback.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(mContext, FeedbackActivity.class));
-            }
-        });
-        about.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(mContext, AboutActivity.class));
-            }
-        });
+        custom.setOnClickListener(v -> loadRangeMode());
+        tags.setOnClickListener(v -> loadTagMode());
+        months.setOnClickListener(v -> loadMonthMode());
+        settings.setOnClickListener(v -> loadSettings());
+        list.setOnClickListener(v -> loadListMode());
+        report.setOnClickListener(v -> startActivity(new Intent(mContext, AccountBookReportViewActivity.class)));
+        sync.setOnClickListener(v -> sync());
+        help.setOnClickListener(v -> startActivity(new Intent(mContext, HelpActivity.class)));
+        feedback.setOnClickListener(v -> startActivity(new Intent(mContext, FeedbackActivity.class)));
+        about.setOnClickListener(v -> startActivity(new Intent(mContext, AboutActivity.class)));
     }
 
     private void loadLogo() {

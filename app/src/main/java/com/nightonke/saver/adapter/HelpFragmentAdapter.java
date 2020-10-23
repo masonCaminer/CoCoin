@@ -1,5 +1,6 @@
 package com.nightonke.saver.adapter;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -27,6 +28,7 @@ public class HelpFragmentAdapter extends FragmentStatePagerAdapter {
         this.position = position;
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
         switch (this.position) {

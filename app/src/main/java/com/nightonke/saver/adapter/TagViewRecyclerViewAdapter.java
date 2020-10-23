@@ -22,14 +22,7 @@ import com.nispok.snackbar.listeners.ActionClickListener;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -111,12 +104,7 @@ public class TagViewRecyclerViewAdapter
 
         if (!IS_EMPTY) {
 
-            Collections.sort(coCoinRecords, new Comparator<CoCoinRecord>() {
-                @Override
-                public int compare(CoCoinRecord lhs, CoCoinRecord rhs) {
-                    return rhs.getCalendar().compareTo(lhs.getCalendar());
-                }
-            });
+            Collections.sort(coCoinRecords, (lhs, rhs) -> rhs.getCalendar().compareTo(lhs.getCalendar()));
             contents = new ArrayList<>();
             SumList = new ArrayList<>();
             type = new ArrayList<>();
@@ -181,15 +169,15 @@ public class TagViewRecyclerViewAdapter
 
             if (chartType == PIE) {
                 AllTagExpanse = new ArrayList<>();
-                for (int i = 0; i < contents.size(); i++) {
+                for (List<CoCoinRecord> content : contents) {
 
                     Map<Integer, Double> tagExpanse = new TreeMap<>();
 
                     for (Tag tag : RecordManager.TAGS) {
-                        tagExpanse.put(tag.getId(), Double.valueOf(0));
+                        tagExpanse.put(tag.getId(), (double) 0);
                     }
 
-                    for (CoCoinRecord coCoinRecord : contents.get(i)) {
+                    for (CoCoinRecord coCoinRecord : content) {
                         double d = tagExpanse.get(coCoinRecord.getTag());
                         d += coCoinRecord.getMoney();
                         tagExpanse.put(coCoinRecord.getTag(), d);
@@ -217,9 +205,7 @@ public class TagViewRecyclerViewAdapter
             }
 
             SelectedPosition = new int[contents.size() + 1];
-            for (int i = 0; i < SelectedPosition.length; i++) {
-                SelectedPosition[i] = 0;
-            }
+            Arrays.fill(SelectedPosition, 0);
 
             fragmentTagId = contents.get(0).get(0).getTag();
             if (fragmentPosition == 0) {
@@ -233,12 +219,10 @@ public class TagViewRecyclerViewAdapter
 
     @Override
     public int getItemViewType(int position) {
-        switch (position) {
-            case 0:
-                return TYPE_HEADER;
-            default:
-                return TYPE_CELL;
+        if (position == 0) {
+            return TYPE_HEADER;
         }
+        return TYPE_CELL;
     }
 
     @Override
@@ -268,10 +252,6 @@ public class TagViewRecyclerViewAdapter
                         return new viewHolder(view) {
                         };
                     case HISTOGRAM:
-                        view = LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.tag_list_view_histogram_body, parent, false);
-                        return new viewHolder(view) {
-                        };
                     case SUM_HISTOGRAM:
                         view = LayoutInflater.from(parent.getContext())
                                 .inflate(R.layout.tag_list_view_histogram_body, parent, false);
@@ -422,9 +402,7 @@ public class TagViewRecyclerViewAdapter
                             Calendar tempCal = new GregorianCalendar(year, month - 1, 1);
                             int daysInMonth = tempCal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-                            int numColumns = daysInMonth;
-
-                            for (int i = 0; i < numColumns; ++i) {
+                            for (int i = 0; i < daysInMonth; ++i) {
                                 subcolumnValues = new ArrayList<>();
                                 SubcolumnValue value = new SubcolumnValue((float)
                                         DayExpanseSum[(year - startYear) * 372
@@ -459,47 +437,41 @@ public class TagViewRecyclerViewAdapter
                             holder.expanse.setText(CoCoinUtil.GetInMoney((int) (double) SumList.get(position - 1)));
                         }
 
-                        holder.iconRight.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                do {
-                                    SelectedPosition[position]
-                                            = (SelectedPosition[position] + 1) % columns.size();
-                                } while (holder.chart.getChartData().getColumns()
-                                        .get(SelectedPosition[position])
-                                        .getValues().size() == 0 ||
-                                        holder.chart.getChartData().getColumns()
-                                                .get(SelectedPosition[position])
-                                                .getValues().get(0).getValue() == 0);
-                                SelectedValue selectedValue =
-                                        new SelectedValue(
-                                                SelectedPosition[position],
-                                                0,
-                                                SelectedValue.SelectedValueType.COLUMN);
-                                holder.chart.selectValue(selectedValue);
-                            }
+                        holder.iconRight.setOnClickListener(v -> {
+                            do {
+                                SelectedPosition[position]
+                                        = (SelectedPosition[position] + 1) % columns.size();
+                            } while (holder.chart.getChartData().getColumns()
+                                    .get(SelectedPosition[position])
+                                    .getValues().size() == 0 ||
+                                    holder.chart.getChartData().getColumns()
+                                            .get(SelectedPosition[position])
+                                            .getValues().get(0).getValue() == 0);
+                            SelectedValue selectedValue =
+                                    new SelectedValue(
+                                            SelectedPosition[position],
+                                            0,
+                                            SelectedValue.SelectedValueType.COLUMN);
+                            holder.chart.selectValue(selectedValue);
                         });
 
-                        holder.iconLeft.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                do {
-                                    SelectedPosition[position]
-                                            = (SelectedPosition[position] - 1 + columns.size())
-                                            % columns.size();
-                                } while (holder.chart.getChartData().getColumns()
-                                        .get(SelectedPosition[position])
-                                        .getValues().size() == 0 ||
-                                        holder.chart.getChartData().getColumns()
-                                                .get(SelectedPosition[position])
-                                                .getValues().get(0).getValue() == 0);
-                                SelectedValue selectedValue =
-                                        new SelectedValue(
-                                                SelectedPosition[position],
-                                                0,
-                                                SelectedValue.SelectedValueType.COLUMN);
-                                holder.chart.selectValue(selectedValue);
-                            }
+                        holder.iconLeft.setOnClickListener(v -> {
+                            do {
+                                SelectedPosition[position]
+                                        = (SelectedPosition[position] - 1 + columns.size())
+                                        % columns.size();
+                            } while (holder.chart.getChartData().getColumns()
+                                    .get(SelectedPosition[position])
+                                    .getValues().size() == 0 ||
+                                    holder.chart.getChartData().getColumns()
+                                            .get(SelectedPosition[position])
+                                            .getValues().get(0).getValue() == 0);
+                            SelectedValue selectedValue =
+                                    new SelectedValue(
+                                            SelectedPosition[position],
+                                            0,
+                                            SelectedValue.SelectedValueType.COLUMN);
+                            holder.chart.selectValue(selectedValue);
                         });
 
                         break;
@@ -549,9 +521,8 @@ public class TagViewRecyclerViewAdapter
                             tempCal.add(Calendar.SECOND, 0);
                             int daysInMonth = tempCal.getActualMaximum(Calendar.DAY_OF_MONTH);
                             int p = contents.get(position - 1).size() - 1;
-                            int numColumns = daysInMonth;
 
-                            for (int i = 0; i < numColumns; ++i) {
+                            for (int i = 0; i < daysInMonth; ++i) {
                                 subcolumnValues = new ArrayList<>();
                                 SubcolumnValue value = new SubcolumnValue(0,
                                         CoCoinUtil.GetRandomColor());
@@ -592,47 +563,41 @@ public class TagViewRecyclerViewAdapter
                             holder.expanse.setText(CoCoinUtil.GetInMoney((int) (double) SumList.get(position - 1)));
                         }
 
-                        holder.iconRight.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                do {
-                                    SelectedPosition[position]
-                                            = (SelectedPosition[position] + 1) % columns.size();
-                                } while (holder.chart.getChartData().getColumns()
-                                        .get(SelectedPosition[position])
-                                        .getValues().size() == 0 ||
-                                        holder.chart.getChartData().getColumns()
-                                                .get(SelectedPosition[position])
-                                                .getValues().get(0).getValue() == 0);
-                                SelectedValue selectedValue =
-                                        new SelectedValue(
-                                                SelectedPosition[position],
-                                                0,
-                                                SelectedValue.SelectedValueType.NONE);
-                                holder.chart.selectValue(selectedValue);
-                            }
+                        holder.iconRight.setOnClickListener(v -> {
+                            do {
+                                SelectedPosition[position]
+                                        = (SelectedPosition[position] + 1) % columns.size();
+                            } while (holder.chart.getChartData().getColumns()
+                                    .get(SelectedPosition[position])
+                                    .getValues().size() == 0 ||
+                                    holder.chart.getChartData().getColumns()
+                                            .get(SelectedPosition[position])
+                                            .getValues().get(0).getValue() == 0);
+                            SelectedValue selectedValue =
+                                    new SelectedValue(
+                                            SelectedPosition[position],
+                                            0,
+                                            SelectedValue.SelectedValueType.NONE);
+                            holder.chart.selectValue(selectedValue);
                         });
 
-                        holder.iconLeft.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                do {
-                                    SelectedPosition[position]
-                                            = (SelectedPosition[position] - 1 + columns.size())
-                                            % columns.size();
-                                } while (holder.chart.getChartData().getColumns()
-                                        .get(SelectedPosition[position])
-                                        .getValues().size() == 0 ||
-                                        holder.chart.getChartData().getColumns()
-                                                .get(SelectedPosition[position])
-                                                .getValues().get(0).getValue() == 0);
-                                SelectedValue selectedValue =
-                                        new SelectedValue(
-                                                SelectedPosition[position],
-                                                0,
-                                                SelectedValue.SelectedValueType.NONE);
-                                holder.chart.selectValue(selectedValue);
-                            }
+                        holder.iconLeft.setOnClickListener(v -> {
+                            do {
+                                SelectedPosition[position]
+                                        = (SelectedPosition[position] - 1 + columns.size())
+                                        % columns.size();
+                            } while (holder.chart.getChartData().getColumns()
+                                    .get(SelectedPosition[position])
+                                    .getValues().size() == 0 ||
+                                    holder.chart.getChartData().getColumns()
+                                            .get(SelectedPosition[position])
+                                            .getValues().get(0).getValue() == 0);
+                            SelectedValue selectedValue =
+                                    new SelectedValue(
+                                            SelectedPosition[position],
+                                            0,
+                                            SelectedValue.SelectedValueType.NONE);
+                            holder.chart.selectValue(selectedValue);
                         });
 
                         break;
@@ -677,7 +642,7 @@ public class TagViewRecyclerViewAdapter
 
     private class ValueTouchListener implements ColumnChartOnValueSelectListener {
 
-        private int position;
+        private final int position;
 
         public ValueTouchListener(int position) {
             this.position = position;
@@ -704,7 +669,7 @@ public class TagViewRecyclerViewAdapter
                     int month = contents.get(position).get(0).getCalendar().get(Calendar.MONTH) + 1;
                     timeString = " " + CoCoinUtil.GetMonthShort(month)
                             + " " + (columnIndex + 1) + " "
-                            + timeString.substring(timeString.length() - 4, timeString.length());
+                            + timeString.substring(timeString.length() - 4);
                     if ("zh".equals(CoCoinUtil.GetLanguage())) {
                         text = mContext.getResources().getString(R.string.on) + timeString + "\n" +
                                 CoCoinUtil.GetSpendString((int) value.getValue());
@@ -717,27 +682,24 @@ public class TagViewRecyclerViewAdapter
                                 mContext.getResources().getString(R.string.on) + timeString;
                     }
                     snackbar.text(text);
-                    snackbar.actionListener(new ActionClickListener() {
-                        @Override
-                        public void onActionClicked(Snackbar snackbar) {
-                            List<CoCoinRecord> shownCoCoinRecords = new ArrayList<>();
-                            boolean isSamed = false;
-                            for (CoCoinRecord coCoinRecord : contents.get(position)) {
-                                if (coCoinRecord.getCalendar().get(Calendar.DAY_OF_MONTH) == columnIndex + 1) {
-                                    shownCoCoinRecords.add(coCoinRecord);
-                                    isSamed = true;
-                                } else {
-                                    if (isSamed) {
-                                        break;
-                                    }
+                    snackbar.actionListener(snackbar1 -> {
+                        List<CoCoinRecord> shownCoCoinRecords = new ArrayList<>();
+                        boolean isSamed = false;
+                        for (CoCoinRecord coCoinRecord : contents.get(position)) {
+                            if (coCoinRecord.getCalendar().get(Calendar.DAY_OF_MONTH) == columnIndex + 1) {
+                                shownCoCoinRecords.add(coCoinRecord);
+                                isSamed = true;
+                            } else {
+                                if (isSamed) {
+                                    break;
                                 }
                             }
-                            ((FragmentActivity) mContext).getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .add(new RecordCheckDialogFragment(
-                                            mContext, shownCoCoinRecords, dialogTitle), "MyDialog")
-                                    .commit();
                         }
+                        ((FragmentActivity) mContext).getSupportFragmentManager()
+                                .beginTransaction()
+                                .add(new RecordCheckDialogFragment(
+                                        mContext, shownCoCoinRecords, dialogTitle), "MyDialog")
+                                .commit();
                     });
                     SnackbarManager.show(snackbar);
                 }
@@ -746,7 +708,7 @@ public class TagViewRecyclerViewAdapter
                     String timeString = " " +
                             contents.get(position).get(0).getCalendar().get(Calendar.YEAR);
                     timeString = " " + CoCoinUtil.GetMonthShort(columnIndex + 1) + " "
-                            + timeString.substring(timeString.length() - 4, timeString.length());
+                            + timeString.substring(timeString.length() - 4);
                     if ("zh".equals(CoCoinUtil.GetLanguage())) {
                         text = mContext.getResources().getString(R.string.in) + timeString + "\n" +
                                 CoCoinUtil.GetSpendString((int) value.getValue());
@@ -759,27 +721,24 @@ public class TagViewRecyclerViewAdapter
                                 mContext.getResources().getString(R.string.in) + timeString;
                     }
                     snackbar.text(text);
-                    snackbar.actionListener(new ActionClickListener() {
-                        @Override
-                        public void onActionClicked(Snackbar snackbar) {
-                            List<CoCoinRecord> shownCoCoinRecords = new ArrayList<>();
-                            boolean isSamed = false;
-                            for (CoCoinRecord coCoinRecord : contents.get(position)) {
-                                if (coCoinRecord.getCalendar().get(Calendar.MONTH) == columnIndex) {
-                                    shownCoCoinRecords.add(coCoinRecord);
-                                    isSamed = true;
-                                } else {
-                                    if (isSamed) {
-                                        break;
-                                    }
+                    snackbar.actionListener(snackbar12 -> {
+                        List<CoCoinRecord> shownCoCoinRecords = new ArrayList<>();
+                        boolean isSamed = false;
+                        for (CoCoinRecord coCoinRecord : contents.get(position)) {
+                            if (coCoinRecord.getCalendar().get(Calendar.MONTH) == columnIndex) {
+                                shownCoCoinRecords.add(coCoinRecord);
+                                isSamed = true;
+                            } else {
+                                if (isSamed) {
+                                    break;
                                 }
                             }
-                            ((FragmentActivity) mContext).getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .add(new RecordCheckDialogFragment(
-                                            mContext, shownCoCoinRecords, dialogTitle), "MyDialog")
-                                    .commit();
                         }
+                        ((FragmentActivity) mContext).getSupportFragmentManager()
+                                .beginTransaction()
+                                .add(new RecordCheckDialogFragment(
+                                        mContext, shownCoCoinRecords, dialogTitle), "MyDialog")
+                                .commit();
                     });
                     SnackbarManager.show(snackbar);
                 }
@@ -787,11 +746,11 @@ public class TagViewRecyclerViewAdapter
                 if (type.get(position).equals(SHOW_IN_MONTH)) {
                     String text = "";
                     String timeString = contents.get(position).get(0).getCalendarString();
-                    timeString = timeString.substring(6, timeString.length());
+                    timeString = timeString.substring(6);
                     int month = contents.get(position).get(0).getCalendar().get(Calendar.MONTH) + 1;
                     timeString = " " + CoCoinUtil.GetMonthShort(month)
                             + " " + (columnIndex + 1) + " "
-                            + timeString.substring(timeString.length() - 4, timeString.length());
+                            + timeString.substring(timeString.length() - 4);
                     if ("zh".equals(CoCoinUtil.GetLanguage())) {
                         text = mContext.getResources().getString(R.string.on) + timeString +
                                 CoCoinUtil.GetSpendString((int) value.getValue()) + "\n" +
@@ -808,28 +767,25 @@ public class TagViewRecyclerViewAdapter
                                 + "in " + CoCoinUtil.GetTagName(contents.get(position).get(0).getTag());
                     }
                     snackbar.text(text);
-                    snackbar.actionListener(new ActionClickListener() {
-                        @Override
-                        public void onActionClicked(Snackbar snackbar) {
-                            List<CoCoinRecord> shownCoCoinRecords = new ArrayList<>();
-                            boolean isSamed = false;
-                            for (CoCoinRecord coCoinRecord : contents.get(position)) {
-                                if (coCoinRecord.getCalendar().
-                                        get(Calendar.DAY_OF_MONTH) == columnIndex + 1) {
-                                    shownCoCoinRecords.add(coCoinRecord);
-                                    isSamed = true;
-                                } else {
-                                    if (isSamed) {
-                                        break;
-                                    }
+                    snackbar.actionListener(snackbar13 -> {
+                        List<CoCoinRecord> shownCoCoinRecords = new ArrayList<>();
+                        boolean isSamed = false;
+                        for (CoCoinRecord coCoinRecord : contents.get(position)) {
+                            if (coCoinRecord.getCalendar().
+                                    get(Calendar.DAY_OF_MONTH) == columnIndex + 1) {
+                                shownCoCoinRecords.add(coCoinRecord);
+                                isSamed = true;
+                            } else {
+                                if (isSamed) {
+                                    break;
                                 }
                             }
-                            ((FragmentActivity) mContext).getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .add(new RecordCheckDialogFragment(
-                                            mContext, shownCoCoinRecords, dialogTitle), "MyDialog")
-                                    .commit();
                         }
+                        ((FragmentActivity) mContext).getSupportFragmentManager()
+                                .beginTransaction()
+                                .add(new RecordCheckDialogFragment(
+                                        mContext, shownCoCoinRecords, dialogTitle), "MyDialog")
+                                .commit();
                     });
                     SnackbarManager.show(snackbar);
                 }
@@ -838,7 +794,7 @@ public class TagViewRecyclerViewAdapter
                     String timeString = "" +
                             contents.get(position).get(0).getCalendar().get(Calendar.YEAR);
                     timeString = " " + CoCoinUtil.GetMonthShort(columnIndex + 1) + " "
-                            + timeString.substring(timeString.length() - 4, timeString.length());
+                            + timeString.substring(timeString.length() - 4);
                     if ("zh".equals(CoCoinUtil.GetLanguage())) {
                         text = mContext.getResources().getString(R.string.in) + timeString +
                                 CoCoinUtil.GetSpendString((int) value.getValue()) + "\n" +
@@ -855,27 +811,24 @@ public class TagViewRecyclerViewAdapter
                                 + "in " + CoCoinUtil.GetTagName(contents.get(position).get(0).getTag());
                     }
                     snackbar.text(text);
-                    snackbar.actionListener(new ActionClickListener() {
-                        @Override
-                        public void onActionClicked(Snackbar snackbar) {
-                            List<CoCoinRecord> shownCoCoinRecords = new ArrayList<>();
-                            boolean isSamed = false;
-                            for (CoCoinRecord coCoinRecord : contents.get(position)) {
-                                if (coCoinRecord.getCalendar().get(Calendar.MONTH) == columnIndex) {
-                                    shownCoCoinRecords.add(coCoinRecord);
-                                    isSamed = true;
-                                } else {
-                                    if (isSamed) {
-                                        break;
-                                    }
+                    snackbar.actionListener(snackbar14 -> {
+                        List<CoCoinRecord> shownCoCoinRecords = new ArrayList<>();
+                        boolean isSamed = false;
+                        for (CoCoinRecord coCoinRecord : contents.get(position)) {
+                            if (coCoinRecord.getCalendar().get(Calendar.MONTH) == columnIndex) {
+                                shownCoCoinRecords.add(coCoinRecord);
+                                isSamed = true;
+                            } else {
+                                if (isSamed) {
+                                    break;
                                 }
                             }
-                            ((FragmentActivity) mContext).getSupportFragmentManager()
-                                    .beginTransaction()
-                                    .add(new RecordCheckDialogFragment(
-                                            mContext, shownCoCoinRecords, dialogTitle), "MyDialog")
-                                    .commit();
                         }
+                        ((FragmentActivity) mContext).getSupportFragmentManager()
+                                .beginTransaction()
+                                .add(new RecordCheckDialogFragment(
+                                        mContext, shownCoCoinRecords, dialogTitle), "MyDialog")
+                                .commit();
                     });
                     SnackbarManager.show(snackbar);
                 }
@@ -891,7 +844,7 @@ public class TagViewRecyclerViewAdapter
 
     private class PieValueTouchListener implements PieChartOnValueSelectListener {
 
-        private int position;
+        private final int position;
 
         public PieValueTouchListener(int position) {
             this.position = position;
@@ -902,15 +855,15 @@ public class TagViewRecyclerViewAdapter
             String text = "";
             String timeString = contents.get(position).get(0).getCalendarString();
             int month = contents.get(position).get(0).getCalendar().get(Calendar.MONTH) + 1;
-            timeString = timeString.substring(6, timeString.length());
+            timeString = timeString.substring(6);
             if (type.get(position).equals(SHOW_IN_YEAR)) {
-                timeString = timeString.substring(timeString.length() - 4, timeString.length());
+                timeString = timeString.substring(timeString.length() - 4);
             } else {
                 timeString = CoCoinUtil.GetMonthShort(month) + " " +
-                        timeString.substring(timeString.length() - 4, timeString.length());
+                        timeString.substring(timeString.length() - 4);
             }
-            final int tagId = Integer.valueOf(String.valueOf(sliceValue.getLabelAsChars()));
-            Double percent = sliceValue.getValue() / SumList.get(position) * 100;
+            final int tagId = Integer.parseInt(String.valueOf(sliceValue.getLabelAsChars()));
+            double percent = sliceValue.getValue() / SumList.get(position) * 100;
             if ("zh".equals(CoCoinUtil.GetLanguage())) {
                 text = CoCoinUtil.GetSpendString((int) sliceValue.getValue()) +
                         CoCoinUtil.GetPercentString(percent) + "\n" +
@@ -941,21 +894,18 @@ public class TagViewRecyclerViewAdapter
                             .actionLabelTypeface(CoCoinUtil.typefaceLatoLight)
                             .actionLabel(mContext.getResources().getString(R.string.check))
                             .actionColor(Color.WHITE)
-                            .actionListener(new ActionClickListener() {
-                                @Override
-                                public void onActionClicked(Snackbar snackbar) {
-                                    List<CoCoinRecord> shownCoCoinRecords = new ArrayList<>();
-                                    for (CoCoinRecord record : contents.get(position)) {
-                                        if (record.getTag() == tagId) {
-                                            shownCoCoinRecords.add(record);
-                                        }
+                            .actionListener(snackbar1 -> {
+                                List<CoCoinRecord> shownCoCoinRecords = new ArrayList<>();
+                                for (CoCoinRecord record : contents.get(position)) {
+                                    if (record.getTag() == tagId) {
+                                        shownCoCoinRecords.add(record);
                                     }
-                                    ((FragmentActivity) mContext).getSupportFragmentManager()
-                                            .beginTransaction()
-                                            .add(new RecordCheckDialogFragment(
-                                                    mContext, shownCoCoinRecords, dialogTitle), "MyDialog")
-                                            .commit();
                                 }
+                                ((FragmentActivity) mContext).getSupportFragmentManager()
+                                        .beginTransaction()
+                                        .add(new RecordCheckDialogFragment(
+                                                mContext, shownCoCoinRecords, dialogTitle), "MyDialog")
+                                        .commit();
                             });
             SnackbarManager.show(snackbar);
         }

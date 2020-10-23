@@ -1,5 +1,6 @@
 package com.nightonke.saver.adapter;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -19,6 +20,7 @@ public class TagChooseFragmentAdapter extends FragmentPagerAdapter {
         this.count = count;
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
         return TagChooseFragment.newInstance(position);
