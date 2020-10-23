@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -26,15 +27,14 @@ public class HelpAboutFragment extends Fragment {
     private ObservableScrollView mScrollView;
 
     public static HelpAboutFragment newInstance() {
-        HelpAboutFragment fragment = new HelpAboutFragment();
-        return fragment;
+        return new HelpAboutFragment();
     }
 
     private Activity activity;
     private Context mContext;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         if (context instanceof Activity){
@@ -54,7 +54,7 @@ public class HelpAboutFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         mScrollView = (ObservableScrollView) view.findViewById(R.id.scrollView);
@@ -95,24 +95,11 @@ public class HelpAboutFragment extends Fragment {
         ((TextView)view.findViewById(R.id.content_32)).setTypeface(CoCoinUtil.getInstance().typefaceLatoLight);
         ((TextView)view.findViewById(R.id.content_33)).setTypeface(CoCoinUtil.getInstance().typefaceLatoLight);
 
-        ((MaterialRippleLayout)view.findViewById(R.id.layout_2)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Nightonke/CoCoin")));
-            }
-        });
-        ((MaterialRippleLayout)view.findViewById(R.id.layout_3)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://blog.csdn.net/u012925008")));
-            }
-        });
-        ((MaterialRippleLayout)view.findViewById(R.id.layout_4)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CoCoinUtil.getInstance().copyToClipboard("Nightonke@outlook.com", mContext);
-                CoCoinUtil.getInstance().showToast(mContext, mContext.getResources().getString(R.string.copy_to_clipboard));
-            }
+        view.findViewById(R.id.layout_2).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Nightonke/CoCoin"))));
+        view.findViewById(R.id.layout_3).setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://blog.csdn.net/u012925008"))));
+        view.findViewById(R.id.layout_4).setOnClickListener(v -> {
+            CoCoinUtil.getInstance().copyToClipboard("Nightonke@outlook.com", mContext);
+            CoCoinUtil.getInstance().showToast(mContext, mContext.getResources().getString(R.string.copy_to_clipboard));
         });
     }
 

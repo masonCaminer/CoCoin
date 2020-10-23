@@ -28,16 +28,14 @@ public class DB {
     public static final int VERSION = 1;
 
     private static DB db;
-    private SQLiteDatabase sqliteDatabase;
-    private DBHelper dbHelper;
+    private final SQLiteDatabase sqliteDatabase;
 
-    private DB(Context context) throws IOException {
-        dbHelper = new DBHelper(context, DB_NAME_STRING, null, VERSION);
+    private DB(Context context) {
+        DBHelper dbHelper = new DBHelper(context, DB_NAME_STRING, null, VERSION);
         sqliteDatabase = dbHelper.getWritableDatabase();
     }
 
-    public synchronized static DB getInstance(Context context)
-            throws IOException {
+    public synchronized static DB getInstance(Context context) {
         if (db == null) db = new DB(context);
         return db;
     }

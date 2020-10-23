@@ -19,6 +19,8 @@ import com.nightonke.saver.model.SettingManager;
 import com.nightonke.saver.util.CoCoinUtil;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.util.Objects;
+
 /**
  * Created by 伟平 on 2015/10/27.
  */
@@ -53,6 +55,7 @@ public class EditMoneyFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.edit_money_fragment, container, false);
 
+        assert getArguments() != null;
         if (getArguments().getInt("type") == CoCoinFragmentManager.MAIN_ACTIVITY_FRAGMENT) {
             CoCoinFragmentManager.mainActivityEditMoneyFragment = this;
         } else if (getArguments().getInt("type") == CoCoinFragmentManager.EDIT_RECORD_ACTIVITY_FRAGMENT) {
@@ -60,9 +63,9 @@ public class EditMoneyFragment extends Fragment {
         }
 
         fragmentPosition = getArguments().getInt("position");
-        editView = (MaterialEditText)mView.findViewById(R.id.money);
-        tagImage = (ImageView)mView.findViewById(R.id.tag_image);
-        tagName = (TextView)mView.findViewById(R.id.tag_name);
+        editView = mView.findViewById(R.id.money);
+        tagImage = mView.findViewById(R.id.tag_image);
+        tagName = mView.findViewById(R.id.tag_name);
         tagName.setTypeface(CoCoinUtil.typefaceLatoLight);
 
         editView.setTypeface(CoCoinUtil.typefaceLatoHairline);
@@ -85,10 +88,10 @@ public class EditMoneyFragment extends Fragment {
                 && CoCoinUtil.editRecordPosition != -1) {
             CoCoinFragmentManager.editRecordActivityEditMoneyFragment
                     .setTagImage(CoCoinUtil.GetTagIcon(
-                            (int)RecordManager.SELECTED_RECORDS.get(CoCoinUtil.editRecordPosition).getTag()));
+                            RecordManager.SELECTED_RECORDS.get(CoCoinUtil.editRecordPosition).getTag()));
             CoCoinFragmentManager.editRecordActivityEditMoneyFragment
                     .setTagName(CoCoinUtil.GetTagName(
-                            (int)RecordManager.SELECTED_RECORDS.get(CoCoinUtil.editRecordPosition).getTag()));
+                            RecordManager.SELECTED_RECORDS.get(CoCoinUtil.editRecordPosition).getTag()));
             CoCoinFragmentManager.editRecordActivityEditMoneyFragment
                     .setTagId(RecordManager.SELECTED_RECORDS.get(CoCoinUtil.editRecordPosition).getTag());
             CoCoinFragmentManager.editRecordActivityEditMoneyFragment
@@ -121,7 +124,7 @@ public class EditMoneyFragment extends Fragment {
     }
 
     public String getNumberText() {
-        return editView.getText().toString();
+        return Objects.requireNonNull(editView.getText()).toString();
     }
 
     public void setNumberText(String string) {

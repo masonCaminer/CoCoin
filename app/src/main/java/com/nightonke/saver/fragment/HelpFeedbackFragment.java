@@ -45,8 +45,7 @@ public class HelpFeedbackFragment extends Fragment {
     private Context mContext;
 
     public static HelpFeedbackFragment newInstance() {
-        HelpFeedbackFragment fragment = new HelpFeedbackFragment();
-        return fragment;
+        return new HelpFeedbackFragment();
     }
 
     @Override
@@ -73,43 +72,40 @@ public class HelpFeedbackFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mScrollView = (ObservableScrollView) view.findViewById(R.id.scrollView);
+        mScrollView = view.findViewById(R.id.scrollView);
         MaterialViewPagerHelper.registerScrollView(getActivity(), mScrollView, null);
 
-        title = (TextView) view.findViewById(R.id.title);
+        title = view.findViewById(R.id.title);
         title.setTypeface(CoCoinUtil.getInstance().typefaceLatoLight);
-        input = (EditText) view.findViewById(R.id.edittext);
+        input = view.findViewById(R.id.edittext);
         input.setTypeface(CoCoinUtil.getInstance().typefaceLatoLight);
-        help = (TextView) view.findViewById(R.id.helper);
+        help = view.findViewById(R.id.helper);
         help.setTypeface(CoCoinUtil.getInstance().typefaceLatoLight);
-        number = (TextView) view.findViewById(R.id.number);
+        number = view.findViewById(R.id.number);
         number.setTypeface(CoCoinUtil.getInstance().typefaceLatoLight);
-        send = (TextView) view.findViewById(R.id.send);
-        send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (exceed) {
-                    new MaterialDialog.Builder(mContext)
-                            .title(R.string.help_feedback_dialog_title)
-                            .content(R.string.help_feedback_dialog_content)
-                            .positiveText(R.string.ok_1)
-                            .show();
-                } else {
-                    CoCoinUtil.getInstance().showToast(CoCoinApplication.getAppContext(), CoCoinApplication.getAppContext().getResources().getString(R.string.help_feedback_sent));
-                    Feedback feedback = new Feedback();
-                    feedback.setContent(input.getText().toString());
-                    feedback.save(CoCoinApplication.getAppContext(), new SaveListener() {
-                        @Override
-                        public void onSuccess() {
-                            CoCoinUtil.getInstance().showToast(CoCoinApplication.getAppContext(), CoCoinApplication.getAppContext().getResources().getString(R.string.help_feedback_sent_successfully));
-                        }
+        send = view.findViewById(R.id.send);
+        send.setOnClickListener(v -> {
+            if (exceed) {
+                new MaterialDialog.Builder(mContext)
+                        .title(R.string.help_feedback_dialog_title)
+                        .content(R.string.help_feedback_dialog_content)
+                        .positiveText(R.string.ok_1)
+                        .show();
+            } else {
+                CoCoinUtil.getInstance().showToast(CoCoinApplication.getAppContext(), CoCoinApplication.getAppContext().getResources().getString(R.string.help_feedback_sent));
+                Feedback feedback = new Feedback();
+                feedback.setContent(input.getText().toString());
+                feedback.save(CoCoinApplication.getAppContext(), new SaveListener() {
+                    @Override
+                    public void onSuccess() {
+                        CoCoinUtil.getInstance().showToast(CoCoinApplication.getAppContext(), CoCoinApplication.getAppContext().getResources().getString(R.string.help_feedback_sent_successfully));
+                    }
 
-                        @Override
-                        public void onFailure(int code, String arg0) {
-                            CoCoinUtil.getInstance().showToast(CoCoinApplication.getAppContext(), CoCoinApplication.getAppContext().getResources().getString(R.string.help_feedback_sent_fail));
-                        }
-                    });
-                }
+                    @Override
+                    public void onFailure(int code, String arg0) {
+                        CoCoinUtil.getInstance().showToast(CoCoinApplication.getAppContext(), CoCoinApplication.getAppContext().getResources().getString(R.string.help_feedback_sent_fail));
+                    }
+                });
             }
         });
 

@@ -19,6 +19,7 @@ import com.squareup.leakcanary.RefWatcher;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -34,7 +35,7 @@ public class MonthViewFragment extends Fragment {
     public int position;
     public int monthNumber;
 
-    private List<CoCoinRecord> list = new ArrayList<>();
+    private final List<CoCoinRecord> list = new ArrayList<>();
 
     private Context mContext;
 
@@ -73,7 +74,7 @@ public class MonthViewFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        mRecyclerView = view.findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
@@ -131,7 +132,7 @@ public class MonthViewFragment extends Fragment {
 
         super.onDestroy();
 
-        RefWatcher refWatcher = CoCoinApplication.getRefWatcher(getActivity());
+        RefWatcher refWatcher = CoCoinApplication.getRefWatcher(Objects.requireNonNull(getActivity()));
         refWatcher.watch(this);
     }
 

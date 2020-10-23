@@ -3,6 +3,7 @@ package com.nightonke.saver.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -47,7 +48,7 @@ public class TagChooseFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         if (context instanceof Activity){
@@ -59,8 +60,9 @@ public class TagChooseFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.tag_choose_fragment, container, false);
-        myGridView = (MyGridView)view.findViewById(R.id.gridview);
+        myGridView = view.findViewById(R.id.gridview);
 
+        assert getArguments() != null;
         fragmentPosition = getArguments().getInt("position");
 
         if (fragmentPosition >= CoCoinFragmentManager.tagChooseFragments.size()) {
@@ -74,15 +76,12 @@ public class TagChooseFragment extends Fragment {
 
         myGridView.setAdapter(tagAdapter);
 
-        myGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                try {
-                    ((OnTagItemSelectedListener)activity).onTagItemPicked(position);
-                    ((OnTagItemSelectedListener)activity).onAnimationStart(RecordManager.TAGS.get(fragmentPosition * 8 + position + 2).getId());
-                } catch (ClassCastException cce){
-                    cce.printStackTrace();
-                }
+        myGridView.setOnItemClickListener((parent, view1, position, id) -> {
+            try {
+                ((OnTagItemSelectedListener)activity).onTagItemPicked(position);
+                ((OnTagItemSelectedListener)activity).onAnimationStart(RecordManager.TAGS.get(fragmentPosition * 8 + position + 2).getId());
+            } catch (ClassCastException cce){
+                cce.printStackTrace();
             }
         });
         return view;

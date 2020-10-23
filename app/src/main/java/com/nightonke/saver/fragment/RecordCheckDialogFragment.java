@@ -53,7 +53,7 @@ public class RecordCheckDialogFragment extends DialogFragment implements RecordC
 
         View view = LayoutInflater.from(context).inflate(R.layout.fragment_dialog_list, null, false);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         RecordCheckDialogRecyclerViewAdapter adapter = new RecordCheckDialogRecyclerViewAdapter(context, list, this);
@@ -64,10 +64,7 @@ public class RecordCheckDialogFragment extends DialogFragment implements RecordC
 
         builder.setView(view);
         builder.setPositiveButton(mContext.getResources().getString(R.string.get),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
+                (dialog, which) -> {
                 });
 
         final AlertDialog alert = builder.create();
@@ -79,19 +76,16 @@ public class RecordCheckDialogFragment extends DialogFragment implements RecordC
         title.setText(this.title);
         alert.setCustomTitle(title);
 
-        alert.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                Button btnPositive = alert.getButton(Dialog.BUTTON_POSITIVE);
-                btnPositive.setTypeface(CoCoinUtil.typefaceLatoLight);
-            }
+        alert.setOnShowListener(dialog -> {
+            Button btnPositive = alert.getButton(Dialog.BUTTON_POSITIVE);
+            btnPositive.setTypeface(CoCoinUtil.typefaceLatoLight);
         });
 
         return alert;
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog) {
+    public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
 
         recyclerView = null;
@@ -120,8 +114,9 @@ public class RecordCheckDialogFragment extends DialogFragment implements RecordC
                 .positiveText(R.string.get)
                 .show();
         dialogView = dialog.getCustomView();
-        TextView remark = (TextView) dialogView.findViewById(R.id.remark);
-        TextView date = (TextView) dialogView.findViewById(R.id.date);
+        assert dialogView != null;
+        TextView remark = dialogView.findViewById(R.id.remark);
+        TextView date = dialogView.findViewById(R.id.date);
         remark.setText(list.get(position).getRemark());
         date.setText(CoCoinUtil.GetCalendarStringRecordCheckDialog(mContext, list.get(position).getCalendar()));
     }

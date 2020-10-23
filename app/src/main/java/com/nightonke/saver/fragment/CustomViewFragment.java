@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -31,13 +32,7 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 
 import net.steamcrafted.materialiconlib.MaterialIconView;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import lecho.lib.hellocharts.listener.PieChartOnValueSelectListener;
@@ -69,8 +64,8 @@ public class CustomViewFragment extends Fragment {
     private TextView expense;
     private TextView emptyTip;
 
-    private Calendar from = Calendar.getInstance();
-    private Calendar to = Calendar.getInstance();
+    private final Calendar from = Calendar.getInstance();
+    private final Calendar to = Calendar.getInstance();
 
     private SuperToast superToast;
 
@@ -111,14 +106,14 @@ public class CustomViewFragment extends Fragment {
     private int tagId = -1;
 
     public static CustomViewFragment newInstance() {
-        CustomViewFragment fragment = new CustomViewFragment();
-        return fragment;
+        return new CustomViewFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
+        assert mContext != null;
         superToast = new SuperToast(mContext);
         superToast.setAnimations(SuperToast.Animations.POPUP);
         superToast.setDuration(SuperToast.Duration.SHORT);
@@ -135,34 +130,34 @@ public class CustomViewFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         IS_EMPTY = RecordManager.getInstance(CoCoinApplication.getAppContext()).RECORDS.isEmpty();
 
-        mScrollView = (ObservableScrollView) view.findViewById(R.id.scrollView);
+        mScrollView = view.findViewById(R.id.scrollView);
 
         MaterialViewPagerHelper.registerScrollView(getActivity(), mScrollView, null);
 
-        fromDate = (TextView)view.findViewById(R.id.from_date);
+        fromDate = view.findViewById(R.id.from_date);
         fromDate.setTypeface(CoCoinUtil.GetTypeface());
 
-        expense = (TextView)view.findViewById(R.id.expense);
+        expense = view.findViewById(R.id.expense);
         expense.setTypeface(CoCoinUtil.typefaceLatoLight);
         expense.setText(CoCoinUtil.GetInMoney(0));
 
-        pie = (PieChartView)view.findViewById(R.id.chart_pie);
+        pie = view.findViewById(R.id.chart_pie);
         pie.setVisibility(View.INVISIBLE);
 
-        iconRight = (MaterialIconView)view.findViewById(R.id.icon_right);
-        iconLeft = (MaterialIconView)view.findViewById(R.id.icon_left);
+        iconRight = view.findViewById(R.id.icon_right);
+        iconLeft = view.findViewById(R.id.icon_left);
         iconRight.setVisibility(View.INVISIBLE);
         iconLeft.setVisibility(View.INVISIBLE);
 
-        all = (MaterialIconView)view.findViewById(R.id.all);
+        all = view.findViewById(R.id.all);
         all.setVisibility(View.INVISIBLE);
 
-        emptyTip = (TextView)view.findViewById(R.id.empty_tip);
+        emptyTip = view.findViewById(R.id.empty_tip);
         emptyTip.setTypeface(CoCoinUtil.GetTypeface());
 
         if (IS_EMPTY) {
@@ -171,57 +166,11 @@ public class CustomViewFragment extends Fragment {
 
         isFrom = true;
 
-        onDateSetListener = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-                if (isFrom) {
-                    fromYear = year;
-                    fromMonth = monthOfYear + 1;
-                    fromDay = dayOfMonth;
-                    Calendar now = Calendar.getInstance();
-                    DatePickerDialog dpd = DatePickerDialog.newInstance(
-                            onDateSetListener,
-                            now.get(Calendar.YEAR),
-                            now.get(Calendar.MONTH),
-                            now.get(Calendar.DAY_OF_MONTH)
-                    );
-                    dpd.setTitle(mContext.getResources().getString(R.string.set_right_calendar));
-                    dpd.show(((Activity)mContext).getFragmentManager(), "Datepickerdialog");
-                    isFrom = false;
-                } else {
-                    from.set(fromYear, fromMonth - 1, fromDay, 0, 0, 0);
-                    from.add(Calendar.SECOND, 0);
-
-                    to.set(year, monthOfYear, dayOfMonth, 23, 59, 59);
-                    to.add(Calendar.SECOND, 0);
-
-                    if (to.before(from)) {
-                        superToast.setText(
-                                mContext.getResources().getString(R.string.from_invalid));
-                        superToast.setText(
-                                mContext.getResources().getString(R.string.to_invalid));
-                        SuperToast.cancelAllSuperToasts();
-                        superToast.show();
-                    } else {
-                        fromDate.setText(" ● " +
-                                mContext.getResources().getString(R.string.from) + " " +
-                                CoCoinUtil.GetMonthShort(from.get(Calendar.MONTH) + 1)
-                                + " " + from.get(Calendar.DAY_OF_MONTH) + CoCoinUtil.GetWhetherFuck() +
-                                from.get(Calendar.YEAR) + " " +
-                                mContext.getResources().getString(R.string.to) + " " +
-                                CoCoinUtil.GetMonthShort(to.get(Calendar.MONTH) + 1)
-                                + " " + to.get(Calendar.DAY_OF_MONTH)  + CoCoinUtil.GetWhetherFuck() +
-                                to.get(Calendar.YEAR));
-                        select();
-                    }
-                }
-            }
-        };
-
-        button = (FloatingActionButton) view.findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        onDateSetListener = (view1, year, monthOfYear, dayOfMonth) -> {
+            if (isFrom) {
+                fromYear = year;
+                fromMonth = monthOfYear + 1;
+                fromDay = dayOfMonth;
                 Calendar now = Calendar.getInstance();
                 DatePickerDialog dpd = DatePickerDialog.newInstance(
                         onDateSetListener,
@@ -229,10 +178,50 @@ public class CustomViewFragment extends Fragment {
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH)
                 );
-                dpd.setTitle(mContext.getResources().getString(R.string.set_left_calendar));
-                dpd.show(((Activity)mContext).getFragmentManager(), "Datepickerdialog");
-                isFrom = true;
+                dpd.setTitle(mContext.getResources().getString(R.string.set_right_calendar));
+                dpd.show(((Activity) mContext).getFragmentManager(), "Datepickerdialog");
+                isFrom = false;
+            } else {
+                from.set(fromYear, fromMonth - 1, fromDay, 0, 0, 0);
+                from.add(Calendar.SECOND, 0);
+
+                to.set(year, monthOfYear, dayOfMonth, 23, 59, 59);
+                to.add(Calendar.SECOND, 0);
+
+                if (to.before(from)) {
+                    superToast.setText(
+                            mContext.getResources().getString(R.string.from_invalid));
+                    superToast.setText(
+                            mContext.getResources().getString(R.string.to_invalid));
+                    SuperToast.cancelAllSuperToasts();
+                    superToast.show();
+                } else {
+                    fromDate.setText(" ● " +
+                            mContext.getResources().getString(R.string.from) + " " +
+                            CoCoinUtil.GetMonthShort(from.get(Calendar.MONTH) + 1)
+                            + " " + from.get(Calendar.DAY_OF_MONTH) + CoCoinUtil.GetWhetherFuck() +
+                            from.get(Calendar.YEAR) + " " +
+                            mContext.getResources().getString(R.string.to) + " " +
+                            CoCoinUtil.GetMonthShort(to.get(Calendar.MONTH) + 1)
+                            + " " + to.get(Calendar.DAY_OF_MONTH) + CoCoinUtil.GetWhetherFuck() +
+                            to.get(Calendar.YEAR));
+                    select();
+                }
             }
+        };
+
+        button = view.findViewById(R.id.button);
+        button.setOnClickListener(v -> {
+            Calendar now = Calendar.getInstance();
+            DatePickerDialog dpd = DatePickerDialog.newInstance(
+                    onDateSetListener,
+                    now.get(Calendar.YEAR),
+                    now.get(Calendar.MONTH),
+                    now.get(Calendar.DAY_OF_MONTH)
+            );
+            dpd.setTitle(mContext.getResources().getString(R.string.set_left_calendar));
+            dpd.show(((Activity) mContext).getFragmentManager(), "Datepickerdialog");
+            isFrom = true;
         });
 
     }
@@ -242,7 +231,7 @@ public class CustomViewFragment extends Fragment {
 
         super.onDestroy();
 
-        RefWatcher refWatcher = CoCoinApplication.getRefWatcher(getActivity());
+        RefWatcher refWatcher = CoCoinApplication.getRefWatcher(Objects.requireNonNull(getActivity()));
         refWatcher.watch(this);
     }
 
@@ -276,7 +265,7 @@ public class CustomViewFragment extends Fragment {
             }
         }
 
-        startDayCalendar = (Calendar)from.clone();
+        startDayCalendar = (Calendar) from.clone();
         startDayCalendar.set(Calendar.HOUR_OF_DAY, 0);
         startDayCalendar.set(Calendar.MINUTE, 0);
         startDayCalendar.set(Calendar.SECOND, 0);
@@ -285,21 +274,21 @@ public class CustomViewFragment extends Fragment {
 
         TagExpanse = new TreeMap<>();
         Expanse = new HashMap<>();
-        originalTargets = new float[(int)days];
+        originalTargets = new float[(int) days];
 
         int size = RecordManager.TAGS.size();
         for (int j = 2; j < size; j++) {
-            TagExpanse.put(RecordManager.TAGS.get(j).getId(), Double.valueOf(0));
+            TagExpanse.put(RecordManager.TAGS.get(j).getId(), (double) 0);
             Expanse.put(RecordManager.TAGS.get(j).getId(), new ArrayList<CoCoinRecord>());
         }
 
         for (int i = start; i >= end; i--) {
             CoCoinRecord coCoinRecord = RecordManager.RECORDS.get(i);
             TagExpanse.put(coCoinRecord.getTag(),
-                    TagExpanse.get(coCoinRecord.getTag()) + Double.valueOf(coCoinRecord.getMoney()));
+                    TagExpanse.get(coCoinRecord.getTag()) + coCoinRecord.getMoney());
             Expanse.get(coCoinRecord.getTag()).add(coCoinRecord);
             Sum += coCoinRecord.getMoney();
-            originalTargets[(int)(TimeUnit.MILLISECONDS.toDays(
+            originalTargets[(int) (TimeUnit.MILLISECONDS.toDays(
                     coCoinRecord.getCalendar().getTimeInMillis()) - startDay)] += coCoinRecord.getMoney();
         }
 
@@ -313,7 +302,7 @@ public class CustomViewFragment extends Fragment {
         for (Map.Entry<Integer, Double> entry : TagExpanse.entrySet()) {
             if (entry.getValue() >= 1) {
                 SliceValue sliceValue = new SliceValue(
-                        (float)(double)entry.getValue(),
+                        (float) (double) entry.getValue(),
                         CoCoinUtil.GetTagColor(entry.getKey()));
                 sliceValue.setLabel(String.valueOf(entry.getKey()));
                 sliceValues.add(sliceValue);
@@ -333,40 +322,31 @@ public class CustomViewFragment extends Fragment {
         pie.setVisibility(View.VISIBLE);
 
         iconRight.setVisibility(View.VISIBLE);
-        iconRight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lastPieSelectedPosition != -1) {
-                    pieSelectedPosition = lastPieSelectedPosition;
-                }
-                pieSelectedPosition
-                        = (pieSelectedPosition - 1 + sliceValues.size())
-                        % sliceValues.size();
-                SelectedValue selectedValue =
-                        new SelectedValue(
-                                pieSelectedPosition,
-                                0,
-                                SelectedValue.SelectedValueType.NONE);
-                pie.selectValue(selectedValue);
+        iconRight.setOnClickListener(v -> {
+            if (lastPieSelectedPosition != -1) {
+                pieSelectedPosition = lastPieSelectedPosition;
             }
+            pieSelectedPosition
+                    = (pieSelectedPosition - 1 + sliceValues.size()) % sliceValues.size();
+            SelectedValue selectedValue =
+                    new SelectedValue(
+                            pieSelectedPosition,
+                            0,
+                            SelectedValue.SelectedValueType.NONE);
+            pie.selectValue(selectedValue);
         });
         iconLeft.setVisibility(View.VISIBLE);
-        iconLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (lastPieSelectedPosition != -1) {
-                    pieSelectedPosition = lastPieSelectedPosition;
-                }
-                pieSelectedPosition
-                        = (pieSelectedPosition + 1)
-                        % sliceValues.size();
-                SelectedValue selectedValue =
-                        new SelectedValue(
-                                pieSelectedPosition,
-                                0,
-                                SelectedValue.SelectedValueType.NONE);
-                pie.selectValue(selectedValue);
+        iconLeft.setOnClickListener(v -> {
+            if (lastPieSelectedPosition != -1) {
+                pieSelectedPosition = lastPieSelectedPosition;
             }
+            pieSelectedPosition = (pieSelectedPosition + 1) % sliceValues.size();
+            SelectedValue selectedValue =
+                    new SelectedValue(
+                            pieSelectedPosition,
+                            0,
+                            SelectedValue.SelectedValueType.NONE);
+            pie.selectValue(selectedValue);
         });
 
 // set value touch listener of pie//////////////////////////////////////////////////////////////////
@@ -385,7 +365,7 @@ public class CustomViewFragment extends Fragment {
             public void onValueSelected(int p, SliceValue sliceValue) {
                 // snack bar
                 String text;
-                tagId = Integer.valueOf(String.valueOf(sliceValue.getLabelAsChars()));
+                tagId = Integer.parseInt(String.valueOf(sliceValue.getLabelAsChars()));
                 double percent = sliceValue.getValue() / Sum * 100;
                 if ("zh".equals(CoCoinUtil.GetLanguage())) {
                     text = CoCoinUtil.GetSpendString((int) sliceValue.getValue()) +
@@ -444,33 +424,28 @@ public class CustomViewFragment extends Fragment {
         });
 
         all.setVisibility(View.VISIBLE);
-        all.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<CoCoinRecord> data = new LinkedList<CoCoinRecord>();
-                for (int i = start; i >= end; i--) data.add(RecordManager.RECORDS.get(i));
-                if ("zh".equals(CoCoinUtil.GetLanguage())) {
-                    dialogTitle = dateShownString + "\n" +
-                            CoCoinUtil.GetSpendString(Sum) +
-                            "于" + CoCoinUtil.GetTagName(tagId);
-                } else {
-                    dialogTitle = CoCoinUtil.GetSpendString(Sum) + " "
-                            + mContext.getResources().getString(R.string.from) + " " +
-                            CoCoinUtil.GetMonthShort(from.get(Calendar.MONTH) + 1) + " " +
-                            from.get(Calendar.DAY_OF_MONTH) + " " +
-                            from.get(Calendar.YEAR) + "\n" +
-                            mContext.getResources().getString(R.string.to) + " " +
-                            CoCoinUtil.GetMonthShort(to.get(Calendar.MONTH) + 1) + " " +
-                            to.get(Calendar.DAY_OF_MONTH) + " " +
-                            to.get(Calendar.YEAR) + " " +
-                            "in " + CoCoinUtil.GetTagName(tagId);
-                }
-                ((FragmentActivity)mContext).getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(new RecordCheckDialogFragment(
-                                mContext, data, dialogTitle), "MyDialog")
-                        .commit();
+        all.setOnClickListener(v -> {
+            List<CoCoinRecord> data = new LinkedList<CoCoinRecord>();
+            for (int i = start; i >= end; i--) data.add(RecordManager.RECORDS.get(i));
+            if ("zh".equals(CoCoinUtil.GetLanguage())) {
+                dialogTitle = dateShownString + "\n" +
+                        CoCoinUtil.GetSpendString(Sum) +
+                        "于" + CoCoinUtil.GetTagName(tagId);
+            } else {
+                dialogTitle = CoCoinUtil.GetSpendString(Sum) + " "
+                        + mContext.getResources().getString(R.string.from) + " " +
+                        CoCoinUtil.GetMonthShort(from.get(Calendar.MONTH) + 1) + " " +
+                        from.get(Calendar.DAY_OF_MONTH) + " " +
+                        from.get(Calendar.YEAR) + "\n" +
+                        mContext.getResources().getString(R.string.to) + " " +
+                        CoCoinUtil.GetMonthShort(to.get(Calendar.MONTH) + 1) + " " +
+                        to.get(Calendar.DAY_OF_MONTH) + " " +
+                        to.get(Calendar.YEAR) + " " +
+                        "in " + CoCoinUtil.GetTagName(tagId);
             }
+            ((FragmentActivity) mContext).getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(new RecordCheckDialogFragment(mContext, data, dialogTitle), "MyDialog").commit();
         });
     }
 
@@ -478,7 +453,7 @@ public class CustomViewFragment extends Fragment {
         @Override
         public void onActionClicked(Snackbar snackbar) {
             List<CoCoinRecord> shownCoCoinRecords = Expanse.get(tagId);
-            ((FragmentActivity)mContext).getSupportFragmentManager()
+            ((FragmentActivity) mContext).getSupportFragmentManager()
                     .beginTransaction()
                     .add(new RecordCheckDialogFragment(
                             mContext, shownCoCoinRecords, dialogTitle), "MyDialog")

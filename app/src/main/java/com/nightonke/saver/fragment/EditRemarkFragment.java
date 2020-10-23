@@ -17,6 +17,8 @@ import com.nightonke.saver.model.SettingManager;
 import com.nightonke.saver.util.CoCoinUtil;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.util.Objects;
+
 /**
  * Created by 伟平 on 2015/10/27.
  */
@@ -47,8 +49,9 @@ public class EditRemarkFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.edit_remark_fragment, container, false);
-        editView = (MaterialEditText)mView.findViewById(R.id.remark);
+        editView = mView.findViewById(R.id.remark);
 
+        assert getArguments() != null;
         if (getArguments().getInt("type") == CoCoinFragmentManager.MAIN_ACTIVITY_FRAGMENT) {
             CoCoinFragmentManager.mainActivityEditRemarkFragment = this;
         } else if (getArguments().getInt("type") == CoCoinFragmentManager.EDIT_RECORD_ACTIVITY_FRAGMENT) {
@@ -90,7 +93,7 @@ public class EditRemarkFragment extends Fragment {
     }
 
     public String getNumberText() {
-        return editView.getText().toString();
+        return Objects.requireNonNull(editView.getText()).toString();
     }
 
     public void setNumberText(String string) {
@@ -106,7 +109,7 @@ public class EditRemarkFragment extends Fragment {
     }
 
     public void setLastSelection() {
-        editView.setSelection(editView.getText().length());
+        editView.setSelection(Objects.requireNonNull(editView.getText()).length());
     }
 
     public void editRequestFocus() {
@@ -129,7 +132,7 @@ public class EditRemarkFragment extends Fragment {
     }
 
     public String getRemark() {
-        return editView.getText().toString();
+        return Objects.requireNonNull(editView.getText()).toString();
     }
 
     public void setRemark(String string) {

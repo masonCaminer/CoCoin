@@ -19,6 +19,8 @@ import com.nightonke.saver.model.SettingManager;
 import com.nightonke.saver.util.CoCoinUtil;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import java.util.Objects;
+
 /**
  * Created by 伟平 on 2015/10/27.
  */
@@ -53,18 +55,19 @@ public class EditRecordFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.edit_money_fragment, container, false);
 
+        assert getArguments() != null;
         fragmentPosition = getArguments().getInt("position");
-        remarkEditView = (MaterialEditText) mView.findViewById(R.id.remark);
-        editView = (MaterialEditText) mView.findViewById(R.id.money);
-        tagImage = (ImageView) mView.findViewById(R.id.tag_image);
-        tagName = (TextView) mView.findViewById(R.id.tag_name);
+        remarkEditView = mView.findViewById(R.id.remark);
+        editView = mView.findViewById(R.id.money);
+        tagImage = mView.findViewById(R.id.tag_image);
+        tagName = mView.findViewById(R.id.tag_name);
         tagName.setTypeface(CoCoinUtil.typefaceLatoLight);
 
         if (fragmentPosition == 0) {
             editView.setTypeface(CoCoinUtil.typefaceLatoHairline);
             editView.setText("" + (int) RecordManager.RECORDS.get(CoCoinUtil.editRecordPosition).getMoney());
             editView.requestFocus();
-            editView.setHelperText(CoCoinUtil.FLOATINGLABELS[editView.getText().toString().length()]);
+            editView.setHelperText(CoCoinUtil.FLOATINGLABELS[Objects.requireNonNull(editView.getText()).toString().length()]);
 
             tagId = RecordManager.RECORDS.get(CoCoinUtil.editRecordPosition).getTag();
             tagName.setText(CoCoinUtil.GetTagName(tagId));
@@ -75,7 +78,7 @@ public class EditRecordFragment extends Fragment {
             remarkEditView.setTypeface(CoCoinUtil.GetTypeface());
 
             remarkEditView.setText(RecordManager.RECORDS.get(CoCoinUtil.editRecordPosition).getRemark());
-            int pos = remarkEditView.getText().length();
+            int pos = Objects.requireNonNull(remarkEditView.getText()).length();
             remarkEditView.setSelection(pos);
 
             editView.setVisibility(View.GONE);
@@ -111,7 +114,7 @@ public class EditRecordFragment extends Fragment {
     }
 
     public String getNumberText() {
-        return editView.getText().toString();
+        return Objects.requireNonNull(editView.getText()).toString();
     }
 
     public void setNumberText(String string) {

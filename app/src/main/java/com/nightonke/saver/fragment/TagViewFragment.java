@@ -17,6 +17,7 @@ import com.squareup.leakcanary.RefWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,7 +32,7 @@ public class TagViewFragment extends Fragment {
 
     private int position;
 
-    private List<CoCoinRecord> list = new ArrayList<>();
+    private final List<CoCoinRecord> list = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -68,14 +69,10 @@ public class TagViewFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
 
         if (position == 0) {
-            for (CoCoinRecord coCoinRecord : RecordManager.RECORDS) {
-                list.add(coCoinRecord);
-            }
+            list.addAll(RecordManager.RECORDS);
         }
         if (position == 1) {
-            for (CoCoinRecord coCoinRecord : RecordManager.RECORDS) {
-                list.add(coCoinRecord);
-            }
+            list.addAll(RecordManager.RECORDS);
         } else {
             for (CoCoinRecord coCoinRecord : RecordManager.RECORDS) {
                 if (coCoinRecord.getTag() == RecordManager.TAGS.get(position).getId()) {
@@ -93,7 +90,7 @@ public class TagViewFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        RefWatcher refWatcher = CoCoinApplication.getRefWatcher(getActivity());
+        RefWatcher refWatcher = CoCoinApplication.getRefWatcher(Objects.requireNonNull(getActivity()));
         refWatcher.watch(this);
     }
 
