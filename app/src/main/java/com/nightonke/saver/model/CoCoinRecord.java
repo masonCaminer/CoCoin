@@ -48,7 +48,7 @@ public class CoCoinRecord extends BmobObject {
     }
 
     public CoCoinRecord() {
-        this.id = Long.valueOf(-1);
+        this.id = (long) -1;
     }
 
     public CoCoinRecord(long id, float money, String currency, int tag, Calendar calendar) {

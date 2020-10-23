@@ -103,11 +103,7 @@ public class AppUpdateManager {
                 tooOldQuery.findObjects(CoCoinApplication.getAppContext(), new FindListener<APK>() {
                     @Override
                     public void onSuccess(List<APK> objectTooOld) {
-                        if (objectTooOld.get(0).getTooOld()) {
-                            mustUpdate = true;
-                        } else {
-                            mustUpdate = false;
-                        }
+                        mustUpdate = objectTooOld.get(0).getTooOld();
                         if (object.size() > 0) {
                             int max = -1;
                             int maxPosition = 0;
@@ -160,13 +156,10 @@ public class AppUpdateManager {
                     .content(getContent())
                     .positiveText(R.string.update_ok)
                     .cancelable(false)
-                    .onAny(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                            if (dialogAction == DialogAction.POSITIVE) {
-                                showDownloadDialog();
-                                materialDialog.dismiss();
-                            }
+                    .onAny((materialDialog, dialogAction) -> {
+                        if (dialogAction == DialogAction.POSITIVE) {
+                            showDownloadDialog();
+                            materialDialog.dismiss();
                         }
                     })
                     .show();
@@ -177,17 +170,14 @@ public class AppUpdateManager {
                     .positiveText(R.string.update_ok)
                     .negativeText(R.string.update_cancel)
                     .neutralText(R.string.update_never)
-                    .onAny(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                            if (dialogAction == DialogAction.POSITIVE) {
-                                showDownloadDialog();
-                                materialDialog.dismiss();
-                            } else if (dialogAction == DialogAction.NEGATIVE) {
+                    .onAny((materialDialog, dialogAction) -> {
+                        if (dialogAction == DialogAction.POSITIVE) {
+                            showDownloadDialog();
+                            materialDialog.dismiss();
+                        } else if (dialogAction == DialogAction.NEGATIVE) {
 
-                            } else {
-                                SettingManager.getInstance().setRemindUpdate(false);
-                            }
+                        } else {
+                            SettingManager.getInstance().setRemindUpdate(false);
                         }
                     })
                     .show();
@@ -208,11 +198,8 @@ public class AppUpdateManager {
                     .content(R.string.downloading_content)
                     .progress(false, 100, true)
                     .cancelable(false)
-                    .onAny(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                    .onAny((materialDialog, dialogAction) -> {
 
-                        }
                     })
                     .show();
         } else {
@@ -221,13 +208,10 @@ public class AppUpdateManager {
                     .content(R.string.downloading_content)
                     .progress(false, 100, true)
                     .negativeText("取消")
-                    .onAny(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                            if (dialogAction == DialogAction.NEGATIVE) {
-                                materialDialog.dismiss();
-                                isCancel = false;
-                            }
+                    .onAny((materialDialog, dialogAction) -> {
+                        if (dialogAction == DialogAction.NEGATIVE) {
+                            materialDialog.dismiss();
+                            isCancel = false;
                         }
                     })
                     .show();
@@ -237,64 +221,61 @@ public class AppUpdateManager {
     }
 
     private void downloadApp() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                URL url = null;
-                InputStream in = null;
-                FileOutputStream out = null;
-                HttpURLConnection conn = null;
-                try {
-                    url = new URL(spec);
-                    conn = (HttpURLConnection) url.openConnection();
-                    conn.connect();
-                    long fileLength = conn.getContentLength();
-                    in = conn.getInputStream();
-                    File filePath = new File(FILE_PATH);
-                    if(!filePath.exists()) {
-                        filePath.mkdir();
+        new Thread(() -> {
+            URL url;
+            InputStream in = null;
+            FileOutputStream out = null;
+            HttpURLConnection conn = null;
+            try {
+                url = new URL(spec);
+                conn = (HttpURLConnection) url.openConnection();
+                conn.connect();
+                long fileLength = conn.getContentLength();
+                in = conn.getInputStream();
+                File filePath = new File(FILE_PATH);
+                if(!filePath.exists()) {
+                    filePath.mkdir();
+                }
+                out = new FileOutputStream(new File(FILE_NAME));
+                byte[] buffer = new byte[1024];
+                int len = 0;
+                long readedLength = 0l;
+                while((len = in.read(buffer)) != -1) {
+                    // 用户点击“取消”按钮，下载中断
+                    if(isCancel) {
+                        break;
                     }
-                    out = new FileOutputStream(new File(FILE_NAME));
-                    byte[] buffer = new byte[1024];
-                    int len = 0;
-                    long readedLength = 0l;
-                    while((len = in.read(buffer)) != -1) {
-                        // 用户点击“取消”按钮，下载中断
-                        if(isCancel) {
-                            break;
-                        }
-                        out.write(buffer, 0, len);
-                        readedLength += len;
-                        curProgress = (int) (((float) readedLength / fileLength) * 100);
-                        handler.sendEmptyMessage(UPDARE_TOKEN);
-                        if(readedLength >= fileLength) {
-                            progressDialog.dismiss();
-                            // 下载完毕，通知安装
-                            handler.sendEmptyMessage(INSTALL_TOKEN);
-                            break;
-                        }
+                    out.write(buffer, 0, len);
+                    readedLength += len;
+                    curProgress = (int) (((float) readedLength / fileLength) * 100);
+                    handler.sendEmptyMessage(UPDARE_TOKEN);
+                    if(readedLength >= fileLength) {
+                        progressDialog.dismiss();
+                        // 下载完毕，通知安装
+                        handler.sendEmptyMessage(INSTALL_TOKEN);
+                        break;
                     }
-                    out.flush();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if(out != null) {
-                        try {
-                            out.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                }
+                out.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if(out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    if(in != null) {
-                        try {
-                            in.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                }
+                if(in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    if(conn != null) {
-                        conn.disconnect();
-                    }
+                }
+                if(conn != null) {
+                    conn.disconnect();
                 }
             }
         }).start();

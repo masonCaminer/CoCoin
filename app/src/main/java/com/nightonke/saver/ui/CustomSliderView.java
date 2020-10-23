@@ -14,19 +14,18 @@ import com.nightonke.saver.R;
  * Created by Weiping on 2016/1/23.
  */
 public class CustomSliderView extends BaseSliderView {
-    private static Typeface font = null;
-    private Context context ;
+    private static final Typeface font = null;
+
     public CustomSliderView(Context context) {
         super(context);
-        this.context = context;
     }
 
     @Override
     public View getView() {
         View v = LayoutInflater.from(getContext()).inflate(R.layout.custom_slider_view,null);
-        LinearLayout description = (LinearLayout)v.findViewById(R.id.description_layout);
+        LinearLayout description = v.findViewById(R.id.description_layout);
         description.setVisibility(View.GONE);
-        ImageView target = (ImageView)v.findViewById(R.id.daimajia_slider_image);
+        ImageView target = v.findViewById(R.id.daimajia_slider_image);
         bindEventAndShow(v, target);
         return v;
     }

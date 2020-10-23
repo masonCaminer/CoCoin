@@ -18,7 +18,7 @@ import com.nightonke.saver.util.CoCoinUtil;
  */
 public class CustomTitleSliderView extends BaseSliderView {
     private static Typeface font = null;
-    private String content;
+    private final String content;
     private int type;
     private TextView title;
 
@@ -37,14 +37,14 @@ public class CustomTitleSliderView extends BaseSliderView {
     public View getView() {
         View v = LayoutInflater.from(getContext()).inflate(R.layout.custom_title_slider_view,null);
 
-        LinearLayout description = (LinearLayout)v.findViewById(R.id.description_layout);
+        LinearLayout description = v.findViewById(R.id.description_layout);
         description.setVisibility(View.GONE);
 
-        title = (TextView)v.findViewById(R.id.title);
+        title = v.findViewById(R.id.title);
         title.setText(content);
         title.setTypeface(CoCoinUtil.typefaceLatoLight);
 
-        ImageView target = (ImageView)v.findViewById(R.id.daimajia_slider_image);
+        ImageView target = v.findViewById(R.id.daimajia_slider_image);
         bindEventAndShow(v, target);
         return v;
     }

@@ -1,5 +1,6 @@
 package com.nightonke.saver.ui;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 
 import com.github.johnpersano.supertoasts.SuperActivityToast;
@@ -16,6 +17,7 @@ public class DummyOperation extends AsyncTask<Void, Integer, Void> {
 
     }
 
+    @SuppressLint("WrongThread")
     @Override
     protected Void doInBackground(Void... voids) {
 

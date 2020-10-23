@@ -58,12 +58,8 @@ public class RecordManager {
 
     // constructor//////////////////////////////////////////////////////////////////////////////////////
     private RecordManager(Context context) {
-        try {
-            db = DB.getInstance(context);
-            if (BuildConfig.DEBUG) Log.d("CoCoin", "db.getInstance(context) S");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        db = DB.getInstance(context);
+        if (BuildConfig.DEBUG) Log.d("CoCoin", "db.getInstance(context) S");
         boolean FIRST_TIME = true;
         {
 // if the app starts firstly, create tags///////////////////////////////////////////////////////////

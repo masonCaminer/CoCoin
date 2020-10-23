@@ -20,7 +20,7 @@ class ExpandableItemIndicatorImplNoAnim extends ExpandableItemIndicator.Impl {
                        int defStyleAttr, ExpandableItemIndicator thiz) {
         View v = LayoutInflater.from(context).
                 inflate(R.layout.widget_expandable_item_indicator_no_anim, thiz, true);
-        mImageView = (ImageView) v.findViewById(R.id.image_view);
+        mImageView = v.findViewById(R.id.image_view);
     }
 
     @Override

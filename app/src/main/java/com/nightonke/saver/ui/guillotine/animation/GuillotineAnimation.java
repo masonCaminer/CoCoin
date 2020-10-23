@@ -72,44 +72,26 @@ public class GuillotineAnimation {
             mActionBarView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        mActionBarView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    } else {
-                        mActionBarView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
+                    mActionBarView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     mActionBarView.setPivotX(calculatePivotX(openingView));
                     mActionBarView.setPivotY(calculatePivotY(openingView));
                 }
             });
         }
-        openingView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                open();
-            }
-        });
+        openingView.setOnClickListener(v -> open());
     }
 
     private void setUpClosingView(final View closingView) {
         mGuillotineView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    mGuillotineView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    mGuillotineView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
+                mGuillotineView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 mGuillotineView.setPivotX(calculatePivotX(closingView));
                 mGuillotineView.setPivotY(calculatePivotY(closingView));
             }
         });
 
-        closingView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                close();
-            }
-        });
+        closingView.setOnClickListener(v -> close());
     }
 
     private ObjectAnimator buildOpeningAnimation() {

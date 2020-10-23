@@ -9,7 +9,7 @@ import com.nightonke.saver.activity.CoCoinApplication;
  * Created by Weiping on 2015/11/30.
  */
 public class CoCoinToast {
-    private static CoCoinToast ourInstance = new CoCoinToast();
+    private static final CoCoinToast ourInstance = new CoCoinToast();
 
     public static CoCoinToast getInstance() {
         return ourInstance;

@@ -93,15 +93,8 @@ public class SettingManager {
     // whether is logged on by default
     private final Boolean DEFAULT_LOGGED_ON = false;
     // user name by default
-    private final String DEFAULT_USER_NAME = null;
     // user email by default
     private final String DEFAULT_USER_EMAIL = null;
-    // has profile logo by default
-    private final Boolean DEFAULT_HAS_LOGO = false;
-    // whether is month-limit by default
-    private final Boolean DEFAULT_IS_MONTH_LIMIT = false;
-    // month-limit by default
-    private final Integer DEFAULT_MONTH_LIMIT = 1000;
     // month warning by default
     private final Integer DEFAULT_MONTH_WARNING = 800;
     // color reminder by default
@@ -133,7 +126,7 @@ public class SettingManager {
 
     private boolean SHOW_LIST_VIEW_GUIDE = true;
 
-    private static SettingManager ourInstance = new SettingManager();
+    private static final SettingManager ourInstance = new SettingManager();
 
     public static SettingManager getInstance() {
         return ourInstance;
@@ -153,7 +146,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putBoolean("FIRST_TIME", FIRST_TIME);
-        editor.commit();
+        editor.apply();
         this.FIRST_TIME = FIRST_TIME;
     }
 
@@ -168,14 +161,14 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putBoolean("LOGGED_ON", LOGGED_ON);
-        editor.commit();
+        editor.apply();
         this.LOGGED_ON = LOGGED_ON;
     }
 
     public String getUserName() {
         USER_NAME = PreferenceManager.
                 getDefaultSharedPreferences(CoCoinApplication.getAppContext())
-                .getString("USER_NAME", DEFAULT_USER_NAME);
+                .getString("USER_NAME", null);
         return USER_NAME;
     }
 
@@ -203,6 +196,8 @@ public class SettingManager {
     }
 
     public Boolean getHasLogo() {
+        // has profile logo by default
+        Boolean DEFAULT_HAS_LOGO = false;
         HAS_LOGO = PreferenceManager.
                 getDefaultSharedPreferences(CoCoinApplication.getAppContext())
                 .getBoolean("HAS_LOGO", DEFAULT_HAS_LOGO);
@@ -248,6 +243,8 @@ public class SettingManager {
     }
 
     public Boolean getIsMonthLimit() {
+        // whether is month-limit by default
+        Boolean DEFAULT_IS_MONTH_LIMIT = false;
         IS_MONTH_LIMIT = PreferenceManager.
                 getDefaultSharedPreferences(CoCoinApplication.getAppContext())
                 .getBoolean("IS_MONTH_LIMIT", DEFAULT_IS_MONTH_LIMIT);
@@ -258,11 +255,13 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putBoolean("IS_MONTH_LIMIT", IS_MONTH_LIMIT);
-        editor.commit();
+        editor.apply();
         this.IS_MONTH_LIMIT = IS_MONTH_LIMIT;
     }
 
     public Integer getMonthLimit() {
+        // month-limit by default
+        int DEFAULT_MONTH_LIMIT = 1000;
         MONTH_LIMIT = PreferenceManager.
                 getDefaultSharedPreferences(CoCoinApplication.getAppContext())
                 .getInt("MONTH_LIMIT", DEFAULT_MONTH_LIMIT);
@@ -273,7 +272,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putInt("MONTH_LIMIT", MONTH_LIMIT);
-        editor.commit();
+        editor.apply();
         this.MONTH_LIMIT = MONTH_LIMIT;
     }
 
@@ -288,7 +287,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putInt("MONTH_WARNING", MONTH_WARNING);
-        editor.commit();
+        editor.apply();
         this.MONTH_WARNING = MONTH_WARNING;
     }
 
@@ -303,7 +302,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putBoolean("IS_COLOR_REMIND", IS_COLOR_REMIND);
-        editor.commit();
+        editor.apply();
         this.IS_COLOR_REMIND = IS_COLOR_REMIND;
     }
 
@@ -318,7 +317,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putInt("REMIND_COLOR", REMIND_COLOR);
-        editor.commit();
+        editor.apply();
         this.REMIND_COLOR = REMIND_COLOR;
     }
 
@@ -333,7 +332,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putBoolean("IS_FORBIDDEN", IS_FORBIDDEN);
-        editor.commit();
+        editor.apply();
         this.IS_FORBIDDEN = IS_FORBIDDEN;
     }
 
@@ -348,7 +347,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putString("ACCOUNT_BOOK_NAME", ACCOUNT_BOOK_NAME);
-        editor.commit();
+        editor.apply();
         this.ACCOUNT_BOOK_NAME = ACCOUNT_BOOK_NAME;
     }
 
@@ -363,7 +362,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putString("PASSWORD", PASSWORD);
-        editor.commit();
+        editor.apply();
         this.PASSWORD = PASSWORD;
     }
 
@@ -378,7 +377,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putString("USER_PASSWORD", USER_PASSWORD);
-        editor.commit();
+        editor.apply();
         this.USER_PASSWORD = USER_PASSWORD;
     }
 
@@ -393,7 +392,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putBoolean("SHOW_PICTURE", SHOW_PICTURE);
-        editor.commit();
+        editor.apply();
         this.SHOW_PICTURE = SHOW_PICTURE;
     }
 
@@ -408,7 +407,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putBoolean("IS_HOLLOW", IS_HOLLOW);
-        editor.commit();
+        editor.apply();
         this.IS_HOLLOW = IS_HOLLOW;
     }
 
@@ -423,7 +422,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putBoolean("REMIND_UPDATE", REMIND_UPDATE);
-        editor.commit();
+        editor.apply();
         this.REMIND_UPDATE = REMIND_UPDATE;
     }
 
@@ -438,7 +437,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putBoolean("CAN_BE_UPDATED", CAN_BE_UPDATED);
-        editor.commit();
+        editor.apply();
         this.CAN_BE_UPDATED = CAN_BE_UPDATED;
     }
 
@@ -453,7 +452,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putString("RECENTLY_SYNC_TIME", RECENTLY_SYNC_TIME);
-        editor.commit();
+        editor.apply();
         this.RECENTLY_SYNC_TIME = RECENTLY_SYNC_TIME;
     }
 
@@ -556,7 +555,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putBoolean("SHOW_MAIN_ACTIVITY_GUIDE", SHOW_MAIN_ACTIVITY_GUIDE);
-        editor.commit();
+        editor.apply();
         this.SHOW_MAIN_ACTIVITY_GUIDE = SHOW_MAIN_ACTIVITY_GUIDE;
     }
 
@@ -571,7 +570,7 @@ public class SettingManager {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(CoCoinApplication.getAppContext()).edit();
         editor.putBoolean("SHOW_LIST_VIEW_GUIDE", SHOW_LIST_VIEW_GUIDE);
-        editor.commit();
+        editor.apply();
         this.SHOW_LIST_VIEW_GUIDE = SHOW_LIST_VIEW_GUIDE;
     }
 }

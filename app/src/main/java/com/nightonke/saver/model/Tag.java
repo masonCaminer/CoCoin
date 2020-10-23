@@ -1,5 +1,7 @@
 package com.nightonke.saver.model;
 
+import androidx.annotation.NonNull;
+
 /**
  * Created by 伟平 on 2015/11/3.
  */
@@ -19,6 +21,7 @@ public class Tag {
         this.dragId = dragId;
     }
 
+    @NonNull
     public String toString() {
         return "Tag(" +
                 "id = " + id + ", " +
