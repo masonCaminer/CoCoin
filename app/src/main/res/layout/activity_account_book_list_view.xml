@@ -115,13 +115,13 @@
                         android:layout_width="24dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="right"
-                        android:paddingRight="@dimen/margin_small"
+                        
                         android:paddingEnd="@dimen/margin_small"
 
                         recyclerviewfastscroller:rfs_barColor="@color/fastScrollBarColor"
                         recyclerviewfastscroller:rfs_handleBackground="@drawable/my_fast_scroller_rounded"
                         android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="false"
+                        
                         android:layout_alignParentEnd="true" />
 
                     <TextView
